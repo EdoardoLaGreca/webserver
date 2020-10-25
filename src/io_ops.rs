@@ -6,6 +6,8 @@ pub fn get_file_content(filename: &str) -> Vec<u8> {
 
     let content: Vec<u8> = fs::read(file_path).unwrap();
 
+    println!("{:?}, length: {}", content, content.len()); //DEBUG
+
     content
 }
 

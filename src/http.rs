@@ -76,6 +76,8 @@ pub fn send_response(mut stream: TcpStream, response: Response<Vec<u8>>) {
         final_response.append(&mut format!("{}: {}", key, value.to_str().unwrap()).as_bytes().to_owned());
         final_response.push(b'\n');
     }
+    
+    final_response.push(b'\n');
 
     // Insert body
     final_response.append(&mut response_body);

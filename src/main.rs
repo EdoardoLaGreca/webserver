@@ -17,7 +17,7 @@ fn handle_stream(mut stream: TcpStream) {
     let parsed_request = http::parse_request(packet_content);
 
     if let Ok(request) = parsed_request {
-        let response = requests_handler::handle_request(request);
+        let response = requests_handler::response_builder(request);
 
         http::send_response(stream, response);
     }
@@ -32,10 +32,10 @@ fn main() {
 
     listener.set_nonblocking(true).unwrap();
 
-    for stream in listener.incoming() {
+    for stream_res in listener.incoming() {
 
-        let stream = stream.unwrap();
-
-        handle_stream(stream)
+        if let Ok(stream) = stream_res {
+            handle_stream(stream);
+        }
     }
 }

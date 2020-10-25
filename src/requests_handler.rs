@@ -2,7 +2,7 @@ use http::{Request, Response, Method};
 use crate::io_ops::get_file_content;
 
 // Returns: body content, content MIME type (html, plain text, etc...), status code
-fn deeper_handle<'a>(req_method: &Method, req_uri: &str) -> (Vec<u8>, &'a str, u16) {
+fn handle_request<'a>(req_method: &Method, req_uri: &str) -> (Vec<u8>, &'a str, u16) {
     match (req_method, req_uri) {
 
         // GET /
@@ -33,9 +33,9 @@ fn deeper_handle<'a>(req_method: &Method, req_uri: &str) -> (Vec<u8>, &'a str, u
     }
 }
 
-pub fn handle_request(req: Request<String>) -> Response<Vec<u8>> {
+pub fn response_builder(req: Request<String>) -> Response<Vec<u8>> {
     
-    let (resp_body, content_type, status_code) = deeper_handle(req.method(), req.uri().path());
+    let (resp_body, content_type, status_code) = handle_request(req.method(), req.uri().path());
 
     Response::builder()
         .status(status_code)
