@@ -1,2 +1,10 @@
 /target
 Cargo.lock
+
+/www/*
+!/www/icons
+
+/www/icons/*
+!/www/icons/*.ico
+!/www/icons/*.png
+!/www/icons/*.svg
