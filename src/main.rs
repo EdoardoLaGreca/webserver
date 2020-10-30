@@ -1,11 +1,16 @@
 extern crate http as libhttp;
+#[macro_use]
+extern crate lazy_static;
 
 use std::net::{TcpListener, TcpStream};
 use std::io::prelude::*;
+use std::thread::sleep;
+use std::time::Duration;
 
 mod http;
 mod io_ops;
 mod requests_handler;
+mod markdown;
 
 fn handle_stream(mut stream: TcpStream) {
     let mut buffer: [u8; 2048] = [0; 2048];
@@ -37,5 +42,8 @@ fn main() {
         if let Ok(stream) = stream_res {
             handle_stream(stream);
         }
+
+        // No overhead CPU usage
+        sleep(Duration::from_millis(5));
     }
 }

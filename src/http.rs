@@ -16,7 +16,7 @@ fn split_keyval(string: &str) -> Result<(&str, &str), ()> {
 pub fn parse_request(request: &str) -> Result<Request<String>, ()> {
 
     // Divide the string in lines
-    let mut splitted_request: Vec<&str> = request.split('\n').collect();
+    let mut splitted_request: Vec<&str> = request.lines().collect();
 
     // Empty request
     if splitted_request.len() == 0 {
@@ -81,8 +81,6 @@ pub fn send_response(mut stream: TcpStream, response: Response<Vec<u8>>) {
 
     // Insert body
     final_response.append(&mut response_body);
-
-    println!("-- Sending...\n{}", String::from_utf8_lossy(final_response.as_slice())); //DEBUG
 
     // Send the response
     if let Err(_) = stream.write(final_response.as_slice()) {
