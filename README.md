@@ -1,2 +1,2 @@
 # webserver
-This webserver is used to provide content on [elagreca.dev](elagreca.dev)
+This webserver is used to provide content on [elagreca.dev](https://elagreca.dev)
