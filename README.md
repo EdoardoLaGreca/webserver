@@ -1,4 +1,8 @@
 # webserver
+![GitHub repo size](https://img.shields.io/github/repo-size/EdoardoLaGreca/webserver)
+![GitHub last commit](https://img.shields.io/github/last-commit/EdoardoLaGreca/webserver)
+![Lines of code](https://img.shields.io/tokei/lines/github/EdoardoLaGreca/webserver)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/EdoardoLaGreca/webserver/Rust)  
 This webserver is used to provide content on [elagreca.dev](https://elagreca.dev)
 
 ## Compile & run
