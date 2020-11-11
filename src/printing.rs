@@ -19,9 +19,15 @@ lazy_static!{
 pub static mut VERB_LVL: u8 = 3;
 
 // Safe wrapper
-fn get_verb_lvl() -> u8 {
+pub fn get_verb_lvl() -> u8 {
 	unsafe {
 		VERB_LVL
+	}
+}
+
+pub fn set_verb_lvl(value: u8) {
+	unsafe {
+		VERB_LVL = value;
 	}
 }
 
@@ -43,5 +49,14 @@ pub fn print_warn(text: &str) {
 pub fn print_info(text: &str) {
 	if get_verb_lvl() >= 3 {
 		println!("{}", format!("{} {}", *INFO_MARKER, text));
+	}
+}
+
+// Prints '\n'
+pub fn print_separator() {
+
+	// No need to print separators without output
+	if get_verb_lvl() != 0 {
+		println!();
 	}
 }

@@ -26,16 +26,37 @@ fn main() {
 	// Listen on this address
 	let address = "0.0.0.0:7878";
 
-	println!("Legend:\n{} <- Error\n{} <- Warning\n{} <- Info",
-		*ERROR_MARKER,
-		*WARNING_MARKER,
-		*INFO_MARKER
-	);
-
 	// Separator
 	println!("\n");
 
 	args::parse_args();
+
+	print_separator();
+
+	// Print legend based on the verbosity level
+	match get_verb_lvl() {
+		1 => {
+			println!("Legend:\n{} <- Error",
+				*ERROR_MARKER,
+			);
+		},
+		2 => {
+			println!("Legend:\n{} <- Error\n{} <- Warning",
+				*ERROR_MARKER,
+				*WARNING_MARKER
+			);
+		},
+		3 => {
+			println!("Legend:\n{} <- Error\n{} <- Warning\n{} <- Info",
+				*ERROR_MARKER,
+				*WARNING_MARKER,
+				*INFO_MARKER
+			);
+		}
+		0 | _ => ()
+	}
+
+	print_separator();
 
 	let listener = TcpListener::bind(address)
 		.expect(&format!("Cannot bind {}", address));
