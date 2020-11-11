@@ -39,6 +39,10 @@ As already stated, this file can be used to make some enhancements to the websit
                     "lang": "it",
                     "path": "/it/la-mia-pagina.md"
                 }
+            ],
+            "styles": [
+                "my_stylesheet.css",
+                "another_stylesheet.scss"
             ]
         }
     ]
@@ -87,6 +91,15 @@ In some cases, you may want to translate the pages in another language. This arr
 }
 ```
 In this case, the page has been translated in Italian and the translated file is located in `www/it/la-mia-pagina.md`.
+
+``` JSON
+"styles": [
+    "my_stylesheet.css",
+    "another_stylesheet.scss"
+]
+```
+In the `"styles"` array you can list the stylesheets that must be included with the markdown file. Note that this webserver supports Sass compilation and if a Sass file gets requested, it will be compiled into a CSS file in real time (inside RAM) and sent.
+
 
 ## License
 This repository uses a BSD-3-Clause license. More info [here](https://github.com/EdoardoLaGreca/webserver/blob/main/LICENSE).
