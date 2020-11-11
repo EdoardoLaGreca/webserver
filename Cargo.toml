@@ -2,7 +2,9 @@
 name = "webserver"
 version = "1.0.0"
 authors = ["EdoardoLaGreca <lagrecaedoardo@gmail.com>"]
+description = "A simple webserver used to power elagreca.dev"
 edition = "2018"
+license = "BSD 3-Clause"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
