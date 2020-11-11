@@ -14,7 +14,7 @@ cargo build --release --target-dir bin
 ```
 By running it, you generate an executable in the `bin/` directory which you can run through this command.
 ```
-./bin/webserver
+./bin/release/webserver
 ```
 
 ## Usage
