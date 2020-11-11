@@ -4,9 +4,14 @@ Cargo.lock
 .vscode
 
 /www/*
-!/www/icons
+!/www/icon
+!/www/meta.json
+!/www/index.md
 
-/www/icons/*
-!/www/icons/*.ico
-!/www/icons/*.png
-!/www/icons/*.svg
+/www/icon/*
+!/www/icon/*.ico
+!/www/icon/*.png
+!/www/icon/*.svg
+
+/www/style/*
+!/www/style/
