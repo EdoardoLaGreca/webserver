@@ -3,7 +3,25 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/EdoardoLaGreca/webserver)
 ![Lines of code](https://img.shields.io/tokei/lines/github/EdoardoLaGreca/webserver)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/EdoardoLaGreca/webserver/Rust)  
-This webserver is used to provide content on [elagreca.dev](https://elagreca.dev)
+This webserver is used to provide content on [elagreca.dev](https://elagreca.dev)  
+The name is temporary, I'm thinking of an original one...
+
+## Why?
+I built this webserver for 3 reasons:
+  - I needed a minimal and fast webserver that gets the job done.
+  - I don't trust big projects as there is a consistent chance of running bloatware or overkilling the whole thing by using less than half features of a full-featured software.
+  - I want to write minimal and lightweight webpages in markdown and let the server compile them into HTML in real time.
+  
+## Features
+  - [ ] A cache system which stores the most requested files in a directory (as HTML).
+  - [ ] "*this page is also available in: ...*" to change the page language, based on `meta.json`.
+  - [ ] An update method, either by uploading the repo on the crates registry or some package manager servers or by implementing a custom self-updater.
+
+## TODOs
+  - [ ] Write a better documentation
+    - [ ] Write a `README.md` file for each important directory (e.g. `src/`, `www/`, etc...)
+    - [ ] Write the repository wiki (on GitHub)
+  - [ ] Choose a better name for the repository
 
 ## Compile & run
 ***It is advised to run the server using the latest release, not the cloned repository. Use the following procedure only if you're interested in either the latest features or the development and contribution since it may be very unstable or it may not even compile at all.***  
@@ -104,7 +122,8 @@ In this case, the page has been translated in Italian and the translated file is
     "another_stylesheet.scss"
 ]
 ```
-In the `"styles"` array you can list the stylesheets that must be included with the markdown file. Note that this webserver supports Sass compilation and if a Sass file gets requested, it will be compiled into a CSS file in real time (inside RAM) and sent.
+In the `"styles"` array you can list the stylesheets that must be included with the markdown file. It is taken for granted that the directory where the stylesheets are stored in is `www/style/`. If a stylesheet is located inside a sub-directory, just write the relative path (e.g. write `path/to/style.css` for `www/style/path/to/style.css`).  
+Note that this webserver supports Sass compilation and if a Sass file gets requested, it will be compiled into a CSS file in real time (inside RAM) and sent.
 
 ## Contribution
 _(coming soon...)_
