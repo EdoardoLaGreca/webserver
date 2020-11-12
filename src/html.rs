@@ -1,6 +1,7 @@
 use comrak::markdown_to_html;
 use comrak::{ComrakOptions, ComrakExtensionOptions, ComrakParseOptions, ComrakRenderOptions};
 use lazy_static;
+use regex::Regex;
 
 lazy_static!{
 	// See https://docs.rs/comrak/0.9.0/comrak/struct.ComrakOptions.html
@@ -39,7 +40,7 @@ lazy_static!{
 // ext_styles:			  External style files (<link rel="stylesheet" href="...">)
 // emb_styles:			  Embedded styles (<style> ... </style>)
 // page_lang:			  Page language (<html lang="...">)
-pub fn build_html_document(markdown_file_content: &str, page_title: &str, ext_styles: Vec<&str>, emb_styles: Vec<&str>, page_lang: Option<&str>) -> String {
+pub fn build_html_document(markdown_file_content: &str, page_title: &str, ext_styles: Vec<String>, emb_styles: Vec<&str>, page_lang: Option<&str>) -> String {
 
 	let mut html_body = markdown_to_html(
 		&markdown_file_content,
@@ -91,4 +92,24 @@ pub fn build_html_document(markdown_file_content: &str, page_title: &str, ext_st
 	let final_html_document = format!("{}\n<!DOCTYPE html>\n<html lang=\"{}\">\n<meta charset=\"utf-8\">\n{}\n{}\n</html>", html_comment, html_page_lang, html_header, html_body);
 
 	final_html_document
+}
+
+pub fn generate_title(path: &str) -> String {
+	// Get the last part of path (filename)
+	let mut page_title = path
+		.split('/')
+		.last()
+		.unwrap()
+		.to_owned();
+
+	// Replace non-alphanumeric characters
+	let regex = Regex::new(r"[^\w]+").unwrap();
+	page_title = regex.replace_all(&page_title, " ").to_string();
+
+	// Capitalize the first letter
+	if let Some(r) = page_title.get_mut(0..1) {
+		r.to_uppercase();
+	}
+
+	page_title
 }
