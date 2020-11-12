@@ -6,6 +6,8 @@
 This webserver is used to provide content on [elagreca.dev](https://elagreca.dev)
 
 ## Compile & run
+***It is advised to run the server using the latest release, not the cloned repository. Use the following procedure only if you're interested in either the latest features or the development and contribution since it may be very unstable or it may not even compile at all.***  
+
 The only dependency is Cargo, which is the Rust Language package manager. If you're on Linux or a Unix-like OS (such as \*BSD) you should be able to install it using your OS package manager. If you can't or you're on Windows, use [this](https://rustup.rs).  
 
 To generate the final executable (optimized), use the command below.
@@ -28,7 +30,7 @@ Files and directories:
     - `www/style/font` = Contains the fonts used in the website. By convention (**MY** convention, if it doesn't already exist), every font family has its own directory (e.g. `www/style/font/RobotoMono/RobotoMono-Regular.ttf`)
     - `www/meta.json` = Is the file where you can write metadata to enhance the website. More info below.
 
-## `meta.json`
+### `meta.json`
 As already stated, this file can be used to make some enhancements to the website. Below there is an example.
 ``` JSON
 {
@@ -104,6 +106,8 @@ In this case, the page has been translated in Italian and the translated file is
 ```
 In the `"styles"` array you can list the stylesheets that must be included with the markdown file. Note that this webserver supports Sass compilation and if a Sass file gets requested, it will be compiled into a CSS file in real time (inside RAM) and sent.
 
+## Contribution
+_(coming soon...)_
 
 ## License
 This repository uses a BSD-3-Clause license. More info [here](https://github.com/EdoardoLaGreca/webserver/blob/main/LICENSE).
