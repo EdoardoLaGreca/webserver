@@ -2,7 +2,7 @@ use libhttp::Method;
 use mime_guess;
 use regex::Regex;
 
-use crate::html::build_html_document;
+use crate::html::{build_html_document, generate_title};
 use crate::io_ops::{get_file_content, get_file_content_string};
 use crate::metadata::Config;
 use crate::css::sass_to_css;
@@ -67,34 +67,24 @@ pub fn get_routes() -> Vec<Route> {
 					// Check if there is a configuration for this
 					// markdown file in meta.json
 					if let Some(c) = config {
+
+						let mut styles: Vec<String> = c.get_styles();
+						styles.push(DEFAULT_MD_STYLE.to_owned());
+
 						build_html_document(
 							&file_content.unwrap(),
 							&c.get_title(),
-							vec![DEFAULT_MD_STYLE],
+							styles,
 							vec![],
 							Some(&c.get_lang())
 						)
 					} else {
-						// Get the last part of path (filename)
-						let mut page_title = req_uri
-							.split('/')
-							.last()
-							.unwrap()
-							.to_owned();
-						
-						// Replace non-alphanumeric characters
-						let regex = Regex::new(r"[^\w]+").unwrap();
-						page_title = regex.replace_all(&page_title, " ").to_string();
-						
-						// Capitalize the first letter
-						if let Some(r) = page_title.get_mut(0..1) {
-							r.to_uppercase();
-						}
+						let page_title = generate_title(req_uri);
 			
 						build_html_document(
 							&file_content.unwrap(),
 							&page_title,
-							vec![DEFAULT_MD_STYLE],
+							vec![DEFAULT_MD_STYLE.to_owned()],
 							vec![],
 							None
 						)
