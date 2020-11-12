@@ -16,12 +16,26 @@ I built this webserver for 3 reasons:
   - [ ] A cache system which stores the most requested files in a directory (as HTML).
   - [ ] "*this page is also available in: ...*" to change the page language, based on `meta.json`.
   - [ ] An update method, either by uploading the repo on the crates registry or some package manager servers or by implementing a custom self-updater.
+  - [ ] A thread limit
 
 ## TODOs
   - [ ] Write a better documentation
     - [ ] Write a `README.md` file for each important directory (e.g. `src/`, `www/`, etc...)
     - [ ] Write the repository wiki (on GitHub)
   - [ ] Choose a better name for the repository
+
+## Requirements
+### Operating systems
+Note that almost any operating system is supported by building from source. The list below specifies which operating systems the prebuilt binaries will be available for on releases.
+  - Windows (Windows 7+)
+  - macOS (10.7+, Lion+)
+  - Linux (kernel 2.6.32+)
+  - FreeBSD
+
+### Hardware
+  - Microprocessor architecture: i686 or x86_64. No specific speed or core number, the more the better. 
+  - At least 1GiB of available RAM.
+  - At least 512MiB of available space in disk.
 
 ## Compile & run
 ***It is advised to run the server using the latest release, not the cloned repository. Use the following procedure only if you're interested in either the latest features or the development and contribution since it may be very unstable or it may not even compile at all.***  
