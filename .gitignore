@@ -6,5 +6,11 @@ Cargo.lock
 /www/*
 !/www/meta.json
 !/www/index.md
+
+!/www/icon/
+/www/icon/*
 !/www/icon/favicon.ico
+
+!/www/style/
+/www/style/*
 !/www/style/markdown.scss

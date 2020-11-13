@@ -1,0 +1,87 @@
+$color_primary_lightest:  hsl(0, 0%, 100%);
+$color_primary_light: hsl(0, 0%, 85%);
+$color_primary_medium: hsl(0, 0%, 60%);
+$color_primary_dark: hsl(0, 0%, 35%);
+$color_primary_darkest: hsl(0, 0%, 10%);
+
+$color_default_fontcolor: $color_primary_darkest;
+$font_family_main: "Lato", sans-serif;
+$font_family_monospace: "Roboto Mono", monospace;
+$font_size: 15px;
+
+// Top and bottom margin
+$margin_default_tb: 15px !important;
+
+body {
+	background-color: $color_primary_lightest;
+}
+
+* {
+	margin-top: $margin_default_tb;
+	margin-bottom: $margin_default_tb;
+}
+
+p {
+	font-family: $font_family_main;
+	font-size: $font_size;
+	color: $color_default_fontcolor;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: $font_family_main;
+	color: $color_default_fontcolor;
+}
+
+hr {
+	background-color: $color_primary_light;
+	border: 0px;
+	height: 2px;
+}
+
+blockquote {
+	margin-right: 0px;
+	margin-left: 0px;
+	padding: 5px;
+	padding-left: 5px;
+	border-left: 5px solid $color_primary_medium;
+	background-color: $color_primary_light;
+}
+
+pre {
+	//width: 100%;
+	margin-left: 0px;
+	margin-right: 0px;
+	overflow: auto;
+	tab-size: 4;
+	padding: 10px;
+	line-height: 20px;
+	background-color: $color_primary_light;
+}
+
+// Code block
+pre > code {
+	font-family: $font_family_monospace;
+	font-size: $font_size;
+	color: $color_default_fontcolor;
+}
+
+// Inline code
+p > code {
+	font-family: $font_family_monospace;
+	font-size: $font_size;
+	color: $color_default_fontcolor;
+	background-color: $color_primary_light;
+	padding: 3px;
+}
+
+/*
+@font-face {
+	font-family: "Lato";
+	src: url(font/Lato/Lato-Regular.ttf);
+}
+
+@font-face {
+	font-family: "Roboto Mono";
+	src: url(font/RobotoMono/RobotoMono-Regular.ttf);
+}
+*/
