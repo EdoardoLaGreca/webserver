@@ -21,39 +21,26 @@ mod html;
 mod metadata;
 mod printing;
 mod args;
+mod first_run;
 
 fn main() {
 	// Listen on this address
 	let address = "0.0.0.0:7878";
 
-	// Separator
-	println!("\n");
-
 	args::parse_args();
+
+	print_separator();
+	
+	// Create files if they don't exist
+	first_run::check_files();
 
 	print_separator();
 
 	// Print legend based on the verbosity level
-	match get_verb_lvl() {
-		1 => {
-			println!("Legend:\n{} <- Error",
-				*ERROR_MARKER,
-			);
-		},
-		2 => {
-			println!("Legend:\n{} <- Error\n{} <- Warning",
-				*ERROR_MARKER,
-				*WARNING_MARKER
-			);
-		},
-		3 => {
-			println!("Legend:\n{} <- Error\n{} <- Warning\n{} <- Info",
-				*ERROR_MARKER,
-				*WARNING_MARKER,
-				*INFO_MARKER
-			);
-		}
-		0 | _ => ()
+	if get_verb_lvl() > 0 {
+		print_err("<- Error");
+		print_warn("<- Warning");
+		print_info("<- Info");
 	}
 
 	print_separator();
