@@ -3,6 +3,8 @@ Cargo.lock
 
 .vscode
 
+/test
+
 /www/*
 !/www/meta.json
 !/www/index.md
