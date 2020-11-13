@@ -46,9 +46,15 @@ To generate the final executable (optimized), use the command below.
 ```
 cargo build --release --target-dir bin
 ```
+
 By running it, you generate an executable in the `bin/` directory which you can run through this command.
 ```
 ./bin/release/webserver
+```
+
+For a help page, type this.
+```
+./bin/release/webserver -h
 ```
 
 ## Usage
