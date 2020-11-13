@@ -27,6 +27,7 @@ do
 done
 echo "All the dependencies are installed."
 
+# Pack everthing
 target_dir=`cat script/target_dir.txt`
 final_dir="$target_dir/final"
 mkdir $final_dir
@@ -61,6 +62,11 @@ do
 		$release_pack_name="$release_pack_name-i686"
 	fi
 
+	# If it's still empty, just write the target name
+	if [ -z $release_pack_name ]
+	then
+		$release_pack_name="$target"
+	fi
 
 	# Put things inside the pack
 	release_pack_dir="$final_dir/$release_pack_name"
@@ -77,8 +83,11 @@ do
 	# Copy the license
 	cp "LICENSE" "$release_pack_dir"
 
-	# Copy other things if strictly necessary
-	#cp ... "$release_pack_dir"
+	# Copy readme.txt
+	cp "script/readme.txt" "$release_pack_dir"
 
 	zip -r "$release_pack_dir.zip" "$release_pack_dir"
 done < script/target_list.txt
+
+echo "Creating a pack containing the source code"
+
