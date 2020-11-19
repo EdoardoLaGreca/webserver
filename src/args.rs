@@ -1,5 +1,8 @@
 use clap::{App, Arg, ArgMatches};
+
 use crate::printing::*;
+use crate::metadata;
+use crate::defaults;
 
 pub fn parse_args() {
 
@@ -23,13 +26,21 @@ The -s flag gets priority over this option.")
 				.multiple(false)
 				.takes_value(true)
 				//.default_value("2")
-				.value_name("N"))
+				.value_name("N")
+				.conflicts_with("silent"))
 			.arg(Arg::with_name("silent")
 				.short("s")
 				.long("silent")
 				.long_help(
 "Enables the silent mode: no output gets printed at all.
-This flag gets priority over the -v option."))
+This flag gets priority over the -v option.")
+				.conflicts_with("verbosity"))
+			.arg(Arg::with_name("meta-path")
+				.long("meta-path")
+				.help("Specifies the path of meta.json")
+				.takes_value(true)
+				.value_name("PATH")
+				.multiple(false))
 			.get_matches()
 	};
 
@@ -37,7 +48,6 @@ This flag gets priority over the -v option."))
 	// Parse CLI args
 	
 	// Silent mode
-	// If it's present: print nothing, set VERB_LVL to 0 and return to skip the verbosity check
 	if matches.is_present("silent") {
 		set_verb_lvl(0);
 		return;
@@ -48,7 +58,7 @@ This flag gets priority over the -v option."))
 	let mut parsed_verb_val: u8 = 2;
 
 	if verb_val != None {
-		print_info(&format!("Verbosity level: {}", verb_val.unwrap()));
+		print_info(format!("Verbosity level: {}", verb_val.unwrap()));
 
 		match verb_val.unwrap() {
 			"1" => {
@@ -61,13 +71,19 @@ This flag gets priority over the -v option."))
 				parsed_verb_val = 3;
 			}
 			_ => {
-				print_warn(&format!("Invalid verbosity level, using default value: 2."))
+				print_warn(format!("Invalid verbosity level, using default value: 2."))
 			},
 		}
 	} else {
-		print_info(&format!("Verbosity level not set, using default value: 2."));
+		print_info(format!("Verbosity level not set, using default value: 2."));
 	}
 
-	set_verb_lvl(parsed_verb_val)
+	set_verb_lvl(parsed_verb_val);
+
+	if let Some(p) = matches.value_of("meta-path") {
+		metadata::set_meta_path(p);
+	} else {
+		metadata::set_meta_path(defaults::DEFAULT_META_PATH);
+	}
 	
 }
