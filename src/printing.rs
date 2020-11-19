@@ -15,7 +15,9 @@ lazy_static!{
 // 1 = Only errors
 // 2 = Errors and warnings
 // 3 = Errors, warnings and info
-// If no verbosity level is set or it's an invalid value, keep it at 2
+// If no verbosity level is set or it's an invalid value, keep it at 2.
+// Note that if a library used to build this repo prints warning or error messages,
+// they won't be handled and will be printed even if the silent flag is enabled.
 pub static mut VERB_LVL: u8 = 3;
 
 // Safe wrapper
@@ -32,23 +34,23 @@ pub fn set_verb_lvl(value: u8) {
 }
 
 // Used to print an error to screen.
-pub fn print_err(text: &str) {
+pub fn print_err<S: Into<String>>(text: S) {
 	if get_verb_lvl() >= 1 {
-		eprintln!("{}", format!("{} {}", *ERROR_MARKER, text));
+		eprintln!("{}", format!("{} {}", *ERROR_MARKER, text.into()));
 	}
 }
 
 // Used to print a warning message to screen.
-pub fn print_warn(text: &str) {
+pub fn print_warn<S: Into<String>>(text: S) {
 	if get_verb_lvl() >= 2 {
-		println!("{}", format!("{} {}", *WARNING_MARKER, text));
+		println!("{}", format!("{} {}", *WARNING_MARKER, text.into()));
 	}
 }
 
 // Used to print an information to screen.
-pub fn print_info(text: &str) {
+pub fn print_info<S: Into<String>>(text: S) {
 	if get_verb_lvl() >= 3 {
-		println!("{}", format!("{} {}", *INFO_MARKER, text));
+		println!("{}", format!("{} {}", *INFO_MARKER, text.into()));
 	}
 }
 
