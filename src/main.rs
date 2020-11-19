@@ -22,11 +22,13 @@ mod metadata;
 mod printing;
 mod args;
 mod first_run;
+mod defaults;
+
+lazy_static!{
+	pub static ref CONFIG: metadata::Config = metadata::Config::parse_metadata();
+}
 
 fn main() {
-	// Listen on this address
-	let address = "0.0.0.0:7878";
-
 	args::parse_args();
 
 	print_separator();
@@ -45,12 +47,12 @@ fn main() {
 
 	print_separator();
 
-	let listener = TcpListener::bind(address)
-		.expect(&format!("Cannot bind {}", address));
+	let listener = TcpListener::bind(CONFIG.get_address())
+		.expect(&format!("Cannot bind {}", CONFIG.get_address()));
 
 	listener.set_nonblocking(true).unwrap();
 
-	print_info(&format!("Server started, listening on {}", listener.local_addr().unwrap()));
+	print_info(format!("Server started, listening on {}", listener.local_addr().unwrap()));
 
 	for stream_res in listener.incoming() {
 
@@ -72,8 +74,8 @@ fn handle_stream(mut stream: TcpStream) {
 	let current_time = Local::now().format("%H:%M:%S (UTC%:z)");
 	let now = Instant::now();
 
-	print_info(&format!("[{}] New request.", current_time));
-	print_info(&format!("Client address: {}", stream.peer_addr().unwrap().to_string().green()));
+	print_info(format!("[{}] New request.", current_time));
+	print_info(format!("Client address: {}", stream.peer_addr().unwrap().to_string().green()));
 
 	// Elaborate the request
 	let packet_content = &String::from_utf8(buffer.to_vec()).unwrap();
@@ -87,7 +89,7 @@ fn handle_stream(mut stream: TcpStream) {
 
 	let elapsed = now.elapsed();
 
-	print_info(&format!("Completed in {}ms ({})", elapsed.as_millis(), {
+	print_info(format!("Completed in {}ms ({})", elapsed.as_millis(), {
 		let elapsed_secs = elapsed.as_secs();
 		
 		if elapsed_secs > 0 {
