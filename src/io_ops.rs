@@ -1,15 +1,14 @@
 use std::fs;
 use std::path::PathBuf;
 
+use crate::defaults;
 use crate::printing::*;
-
-static WWW: &str = "www/";
 
 // Get the content of a file which is located in the www directory
 // Extensions are written without the point character before
 pub fn get_file_content(filename: String, extension: Option<&str>) -> Result<Vec<u8>, ()> {
 
-	let mut file_path: PathBuf = PathBuf::from(WWW);
+	let mut file_path: PathBuf = PathBuf::from(defaults::WWW);
 
 	// Add extension if needed
 	let filename_complete = {
@@ -22,12 +21,12 @@ pub fn get_file_content(filename: String, extension: Option<&str>) -> Result<Vec
 
 	file_path.push(&filename_complete);
 
-	print_info(&format!("Getting {} from disk...", file_path.to_str().unwrap()));
+	print_info(format!("Getting {} from disk...", file_path.to_str().unwrap()));
 
 	let content = fs::read(&file_path);
 
 	if let Err(_) = content {
-		print_err(&format!("Error while getting the file {}", file_path.to_str().unwrap()));
+		print_err(format!("Error while getting the file {}", file_path.to_str().unwrap()));
 		return Err(());
 	}
 
@@ -47,7 +46,7 @@ pub fn get_file_content_string(filename: String, extension: Option<&str>) -> Res
 	if let Ok(s) = String::from_utf8(file_content.unwrap()) {
 		Ok(s)
 	} else {
-		print_err(&format!("Cannot read file {} as UTF-8. Not going to send it", filename));
+		print_err(format!("Cannot read file {} as UTF-8. Not going to send it", filename));
 		Err(())
 	}
 }
