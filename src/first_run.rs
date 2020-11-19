@@ -12,35 +12,21 @@ www/
 |  |- sample.md
 |
 |- style/
-|  |- markdown.scss
-|  |- font/
+   |- markdown.scss
+   |- font/
 */
 
 use std::path::Path;
 use std::fs;
 
-// Directories always end with "/"
-// Put directories before files stored in them
-static BASE: [&str; 10] = [
-	"www/",
-	"www/index.md",
-	"www/meta.json",
-	"www/icon/",
-	"www/icon/favicon.ico",
-	"www/en/",
-	"www/en/sample.md",
-	"www/style/",
-	"www/style/markdown.scss",
-	"www/style/font/"
-];
-
+use crate::defaults;
 
 // Check if all the files needed to run are available
 // true = ok
 // false = files are missing
 pub fn check_files() {
 
-	for entity in &BASE {
+	for entity in &*defaults::BASE {
 		
 		// Check if the entity exists (can be anything: file, directory, etc...)
 		if !Path::new(entity).exists() {
