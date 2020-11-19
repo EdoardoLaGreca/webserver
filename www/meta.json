@@ -1,4 +1,6 @@
 {
+	"address": "0.0.0.0:7878",
+	"page_404_path": "",
 	"pages": [
 		{
 			"filename": "index.md",
