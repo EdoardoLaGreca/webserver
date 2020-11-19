@@ -7,12 +7,7 @@ use crate::io_ops::{get_file_content, get_file_content_string};
 use crate::metadata::Config;
 use crate::css::sass_to_css;
 use crate::printing::*;
-
-// DO NOT write the "www/" part
-static METADATA_PATH: &str = "meta.json";
-
-// DO NOT write the "www/style/" part
-static DEFAULT_MD_STYLE: &str = "markdown.scss";
+use crate::defaults;
 
 // Webserver routes
 pub fn get_routes() -> Vec<Route> {
@@ -57,10 +52,10 @@ pub fn get_routes() -> Vec<Route> {
 					return None;
 				}
 
-				print_info(&format!("Translating markdown file {}.md into HTML...", md_page_name));
+				print_info(format!("Translating markdown file {}.md into HTML...", md_page_name));
 
 				// Get configuration from meta.json
-				let config_file = Config::parse_metadata(METADATA_PATH);
+				let config_file = Config::parse_metadata();
 				let config = config_file.get_by_path(req_uri);
 
 				let converted_md = {
@@ -69,7 +64,7 @@ pub fn get_routes() -> Vec<Route> {
 					if let Some(c) = config {
 
 						let mut styles: Vec<String> = c.get_styles();
-						styles.push(DEFAULT_MD_STYLE.to_owned());
+						styles.push(defaults::DEFAULT_MD_STYLE.to_owned());
 
 						build_html_document(
 							&file_content.unwrap(),
@@ -84,7 +79,7 @@ pub fn get_routes() -> Vec<Route> {
 						build_html_document(
 							&file_content.unwrap(),
 							&page_title,
-							vec![DEFAULT_MD_STYLE.to_owned()],
+							vec![defaults::DEFAULT_MD_STYLE.to_owned()],
 							vec![],
 							None
 						)
@@ -111,9 +106,8 @@ pub fn get_routes() -> Vec<Route> {
 				}
 
 				if let Some(f_content) = get_checked_file_content(file_name.into(), None) {
-
 					if file_name.ends_with(".scss") {
-						let final_content = sass_to_css(String::from_utf8(f_content).unwrap());
+						let final_content = sass_to_css(String::from_utf8(f_content).unwrap(), defaults::get_default_grass_options());
 						mime_type = "text/css".into();
 	
 						return Some((final_content.as_bytes().to_vec(), mime_type, 200))
