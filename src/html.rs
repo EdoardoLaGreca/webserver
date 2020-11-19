@@ -1,37 +1,7 @@
 use comrak::markdown_to_html;
-use comrak::{ComrakOptions, ComrakExtensionOptions, ComrakParseOptions, ComrakRenderOptions};
-use lazy_static;
 use regex::Regex;
 
-lazy_static!{
-	// See https://docs.rs/comrak/0.9.0/comrak/struct.ComrakOptions.html
-	static ref COMRAK_OPTIONS: ComrakOptions = {
-		ComrakOptions {
-			extension: ComrakExtensionOptions {
-				strikethrough: true,
-				tagfilter: false,
-				table: true,
-				autolink: true,
-				tasklist: true,
-				superscript: true,
-				header_ids: None,
-				footnotes: true,
-				description_lists: false
-			},
-			parse: ComrakParseOptions {
-				smart: true,
-				default_info_string: None
-			},
-			render: ComrakRenderOptions {
-				hardbreaks: true,
-				github_pre_lang: true,
-				width: 80,
-				unsafe_: false,
-				escape: false
-			}
-		}
-	};
-}
+use crate::defaults;
 
 // Convert Markdown into HTML by using comrak
 // markdown_file_content: Content of the markdown file
@@ -44,7 +14,7 @@ pub fn build_html_document(markdown_file_content: &str, page_title: &str, ext_st
 
 	let mut html_body = markdown_to_html(
 		&markdown_file_content,
-		&COMRAK_OPTIONS
+		&defaults::COMRAK_OPTIONS
 	);
 
 	// Add enclosing body tags
