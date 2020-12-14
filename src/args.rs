@@ -55,7 +55,7 @@ This flag gets priority over the -v option.")
 
 	// Verbosity
 	let verb_val = matches.value_of("verbosity");
-	let mut parsed_verb_val: u8 = 2;
+	let mut parsed_verb_val: u8 = defaults::DEFAULT_VERB;
 
 	if verb_val != None {
 		print_info(format!("Verbosity level: {}", verb_val.unwrap()));

@@ -11,7 +11,8 @@ static mut META_PATH: String = String::new();
 #[derive(Clone, Debug, Default)]
 pub struct Config {
 	address: String,
-	default_verbosity: u8,
+	threads: usize,
+	verbosity: u8,
 	page_404_path: String,
 	pages: Vec<PageMetadata>
 }
@@ -91,9 +92,22 @@ impl Config {
 			}
 		};
 
+		config.threads = {
+			if metadata["thread"].is_null() {
+				defaults::DEFAULT_THREADS
+			} else {
+				metadata["thread"].as_usize().unwrap()
+			}
+		};
+
 		config.page_404_path = {
 			if metadata["page_404_path"].is_null() {
-				defaults::DEFAULT_PAGE_404_PATH.into()
+				// Check if path exists
+				if Path::new(defaults::DEFAULT_PAGE_404_PATH).exists() {
+					defaults::DEFAULT_PAGE_404_PATH.into()
+				} else {
+					"".into()
+				}
 			} else {
 				metadata["page_404_path"].to_string()
 			}
@@ -165,8 +179,12 @@ impl Config {
 		self.address.clone()
 	}
 
-	pub fn get_default_verbosity(&self) -> u8 {
-		self.default_verbosity
+	pub fn get_threads(&self) -> usize {
+		self.threads
+	}
+
+	pub fn get_verbosity(&self) -> u8 {
+		self.verbosity
 	}
 
 	pub fn get_page_404_path(&self) -> String {

@@ -3,6 +3,7 @@ extern crate http as libhttp;
 extern crate lazy_static;
 use chrono::prelude::*;
 use colored::Colorize;
+use rayon_core::ThreadPoolBuilder;
 
 use std::net::{TcpListener, TcpStream};
 use std::io::prelude::*;
@@ -50,14 +51,19 @@ fn main() {
 	let listener = TcpListener::bind(CONFIG.get_address())
 		.expect(&format!("Cannot bind {}", CONFIG.get_address()));
 
-	listener.set_nonblocking(true).unwrap();
+	//listener.set_nonblocking(true).unwrap();
 
 	print_info(format!("Server started, listening on {}", listener.local_addr().unwrap()));
+
+	// Create thread pool
+	let pool = ThreadPoolBuilder::new().num_threads(CONFIG.get_threads()).build().unwrap();
+
+	print_info(format!("Thread pool created, total threads: {}", CONFIG.get_threads()));
 
 	for stream_res in listener.incoming() {
 
 		if let Ok(stream) = stream_res {
-			handle_stream(stream);
+			pool.install(|| handle_stream(stream));
 		}
 
 		// No overhead CPU usage

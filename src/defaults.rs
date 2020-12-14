@@ -7,6 +7,7 @@ pub static DEFAULT_MD_STYLE: &str = "markdown.scss";
 pub static WWW: &str = "www/";
 
 pub static DEFAULT_ADDRESS: &str = "127.0.0.1:80";
+pub static DEFAULT_THREADS: usize = 4;
 pub static DEFAULT_VERB: u8 = 3;
 pub static DEFAULT_PAGE_404_PATH: &str = "404.txt";
 pub static DEFAULT_404_PAGE_CONTENT: &str = "ERROR 404: Not found.";
