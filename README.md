@@ -72,27 +72,45 @@ Files and directories:
 As already stated, this file can be used to make some enhancements to the website. Below there is an example.
 ``` JSON
 {
-    "pages": [
+  "address": "0.0.0.0:7878",
+  "threads": "5",
+  "page_404_path": "",
+  "pages": [
+    {
+      "filename": "my-page.md",
+      "title": "My page title",
+      "lang": "en",
+      "path": "/en/my-page.md",
+      "translations": [
         {
-            "filename": "my-page.md",
-            "title": "My page title",
-            "lang": "en",
-            "path": "/en/my-page.md",
-            "translations": [
-                {
-                    "lang": "it",
-                    "path": "/it/la-mia-pagina.md"
-                }
-            ],
-            "styles": [
-                "my_stylesheet.css",
-                "another_stylesheet.scss"
-            ]
+          "lang": "it",
+          "path": "/it/la-mia-pagina.md"
         }
-    ]
+      ],
+      "styles": [
+        "my_stylesheet.css",
+        "another_stylesheet.scss"
+      ]
+    }
+  ]
 }
 ```
-Let's analyze it line-by-line:  
+Let's analyze it line-by-line:
+
+``` JSON
+"address": "0.0.0.0:7878"
+```
+This is the address the server will listen on for connections. It's useful to change in case you have other programs listening on the same address.
+
+``` JSON
+"threads": "5"
+```
+This is the number of threads that will be initialized in the thread pool. The higher is this number, the more connections the webserver will be able to handle concurrently, the more %CPU and RAM will be potentially used.
+
+``` JSON
+"page_404_path": ""
+```
+This represents the path to a custom 404 page. The base directory is `www/` (e.g. `pages/my_404_page.md` means `www/pages/my_404_page.md`). If it's left blank, the default 404 page will be used.
 
 ``` JSON
 "pages": [
@@ -145,8 +163,25 @@ In this case, the page has been translated in Italian and the translated file is
 In the `"styles"` array you can list the stylesheets that must be included with the markdown file. It is taken for granted that the directory where the stylesheets are stored in is `www/style/`. If a stylesheet is located inside a sub-directory, just write the relative path (e.g. write `path/to/style.css` for `www/style/path/to/style.css`).  
 Note that this webserver supports Sass compilation and if a Sass file gets requested, it will be compiled into a CSS file in real time (inside RAM) and sent.
 
+#### Default values
+This section contains all the default values that will be used in case no data is provided.
+ 
+ - Verbosity: `2`
+ - Markdown file: `markdown.scss` (in `www/style/`)
+ - `address`: `127.0.0.1:80`
+ - `threads`: `4`
+ - `page_404_path`: `404.txt` (in case this file doesn't exists, the client will receive the plain text string `ERROR 404: Not found.`)
+ - `meta.json` path: `www/meta.json`
+ 
+For more info, have a look at `src/defaults.rs`.
+
 ## Contribution
-_(coming soon...)_
+The main way to contribute is through issues.  
+If you think that something is missing or some things may be better written in another way, open an issue.  
+If you think that the documentation contains errors or is not clear, open an issue.  
+If you think that anything of any kind can be improved, open an issue.  
+
+I'm not a Git expert so I'm not still aware of what pull requests really are.
 
 ## License
 This repository uses a BSD-3-Clause license. More info [here](https://github.com/EdoardoLaGreca/webserver/blob/main/LICENSE).
