@@ -78,7 +78,6 @@ fn main() {
 			
 			pool.execute(move|| {
 				handle_stream(stream);
-				sleep(Duration::from_secs(5)); //DEBUG
 			});
 		}
 
