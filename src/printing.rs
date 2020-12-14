@@ -33,6 +33,18 @@ pub fn set_verb_lvl(value: u8) {
 	}
 }
 
+pub fn print_markers() {
+	if get_verb_lvl() > 0 {
+		println!("{} {}", *ERROR_MARKER, "<- Error");
+		if get_verb_lvl() > 1 {
+			println!("{} {}", *WARNING_MARKER, "<- Warning");
+			if get_verb_lvl() > 2 {
+				println!("{} {}", *INFO_MARKER, "<- Info");
+			}
+		}
+	}
+}
+
 // Used to print an error to screen.
 pub fn print_err<S: Into<String>>(text: S) {
 	if get_verb_lvl() >= 1 {

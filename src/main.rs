@@ -3,13 +3,14 @@ extern crate http as libhttp;
 extern crate lazy_static;
 use chrono::prelude::*;
 use colored::Colorize;
-use rayon_core::ThreadPoolBuilder;
+use threadpool::ThreadPool;
 
 use std::net::{TcpListener, TcpStream};
 use std::io::prelude::*;
 use std::thread::sleep;
 use std::time::Duration;
 use std::time::Instant;
+use std::sync::{Arc, Mutex};
 
 use crate::printing::*;
 
@@ -33,18 +34,14 @@ fn main() {
 	args::parse_args();
 
 	print_separator();
-	
+
 	// Create files if they don't exist
 	first_run::check_files();
 
 	print_separator();
 
 	// Print legend based on the verbosity level
-	if get_verb_lvl() > 0 {
-		print_err("<- Error");
-		print_warn("<- Warning");
-		print_info("<- Info");
-	}
+	print_markers();
 
 	print_separator();
 
@@ -53,22 +50,44 @@ fn main() {
 
 	//listener.set_nonblocking(true).unwrap();
 
-	print_info(format!("Server started, listening on {}", listener.local_addr().unwrap()));
-
 	// Create thread pool
-	let pool = ThreadPoolBuilder::new().num_threads(CONFIG.get_threads()).build().unwrap();
-
+	let pool = Arc::new(Mutex::new(
+		ThreadPool::new(CONFIG.get_threads())
+	));
 	print_info(format!("Thread pool created, total threads: {}", CONFIG.get_threads()));
+
+	// Set the Ctrl+C handler
+	let pool_ctrlc = pool.clone();
+	ctrlc::set_handler(move || {
+		println!("\nShutting down...");
+
+		// Join threads before shutting down
+		pool_ctrlc.lock().unwrap().join();
+		
+		std::process::exit(0);
+    }).unwrap_or_else(|_| print_warn("Unable to set the Ctrl+C handler."));
+
+	print_info(format!("Server started, listening on {}", listener.local_addr().unwrap()));
 
 	for stream_res in listener.incoming() {
 
 		if let Ok(stream) = stream_res {
-			pool.install(|| handle_stream(stream));
+			
+			// pool instance for the worker threads
+			let pool = pool.lock().unwrap();
+			
+			pool.execute(move|| {
+				handle_stream(stream);
+				sleep(Duration::from_secs(5)); //DEBUG
+			});
 		}
 
 		// No overhead CPU usage
 		sleep(Duration::from_millis(5));
 	}
+
+	// Shutdown the threadpool
+	pool.lock().unwrap().join();
 }
 
 fn handle_stream(mut stream: TcpStream) {
