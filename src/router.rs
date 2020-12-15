@@ -4,7 +4,7 @@ use regex::Regex;
 
 use crate::html::{build_html_document, generate_title};
 use crate::io_ops::{get_file_content, get_file_content_string};
-use crate::metadata::Config;
+use crate::config::{Config, CONFIG};
 use crate::css::sass_to_css;
 use crate::printing::*;
 use crate::defaults;
@@ -55,7 +55,7 @@ pub fn get_routes() -> Vec<Route> {
 				print_info(format!("Translating markdown file {}.md into HTML...", md_page_name));
 
 				// Get configuration from meta.json
-				let config_file = Config::parse_metadata();
+				let config_file = Config::parse_metadata(CONFIG.read().unwrap().get_verbosity());
 				let config = config_file.get_by_path(req_uri);
 
 				let converted_md = {
@@ -86,12 +86,20 @@ pub fn get_routes() -> Vec<Route> {
 					}
 				};
 
+				print_info(format!("Markdown file {}.md translated into HTML", md_page_name));
+
 				Some((converted_md.as_bytes().to_vec(), "text/html".into(), 200))
 			}
 		),
-		Route::new( // Style dir
-			Method::GET, r"^(/style/.+\..+)",
+		Route::new( // Other files (CSS, HTML, etc...) except Markdown
+			Method::GET, r"^(/.+\..+)",
 			|req_uri| {
+				
+				// Do not send markdown source code
+				if req_uri.ends_with(".md") {
+					print_warn("Requested Markdown source code won't be sent");
+					return None
+				}
 				
 				// Remove the first character ('/') and return the file
 				let file_name = req_uri.strip_prefix('/').unwrap();
