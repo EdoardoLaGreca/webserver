@@ -14,15 +14,15 @@ pub fn parse_args() {
 			.arg(Arg::with_name("verbosity")
 				.short("v")
 				.long("verbosity")
-				.long_help(
+				.long_help(format!(
 "Sets the level of verbosity.
 If no verbosity level is set or it's an invalid value,
-the default value (2) will be used.
+the default value ({}) will be used.
 Possible values:
  1 = Only errors
  2 = Errors and warnings
  3 = Errors, warnings and info
-The -s flag gets priority over this option.")
+The -s flag gets priority over this option.", defaults::DEFAULT_VERB))
 				.multiple(false)
 				.takes_value(true)
 				//.default_value("2")
