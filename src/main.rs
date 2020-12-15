@@ -20,16 +20,11 @@ mod io_ops;
 mod requests_handler;
 mod router;
 mod html;
-mod metadata;
+mod config;
 mod printing;
 mod args;
 mod first_run;
 mod defaults;
-
-lazy_static!{
-	#[derive(Debug)]
-	pub static ref CONFIG: metadata::Config = metadata::Config::parse_metadata();
-}
 
 fn main() {
 	args::parse_args();
@@ -39,23 +34,27 @@ fn main() {
 	// Create files if they don't exist
 	first_run::check_files();
 
-	print_separator();
-
 	// Print legend based on the verbosity level
 	print_markers();
 
 	print_separator();
 
-	let listener = TcpListener::bind(CONFIG.get_address())
-		.expect(&format!("Cannot bind {}", CONFIG.get_address()));
+	print_info("Press Ctrl+C to close the server");
+
+	let threads_quantity: usize = config::CONFIG.read().unwrap().get_threads();
+	let address = config::CONFIG.read().unwrap().get_address();
+
+	let listener = TcpListener::bind(&address)
+		.expect(&format!("Cannot bind {}", address));
 
 	//listener.set_nonblocking(true).unwrap();
 
 	// Create thread pool
 	let pool = Arc::new(Mutex::new(
-		ThreadPool::new(CONFIG.get_threads())
+		ThreadPool::new(threads_quantity)
 	));
-	print_info(format!("Thread pool created, total threads: {}", CONFIG.get_threads()));
+
+	print_info(format!("Thread pool created, total threads: {}", threads_quantity));
 
 	// Set the Ctrl+C handler
 	let pool_ctrlc = pool.clone();
@@ -66,7 +65,7 @@ fn main() {
 		pool_ctrlc.lock().unwrap().join();
 		
 		std::process::exit(0);
-    }).unwrap_or_else(|_| print_warn("Unable to set the Ctrl+C handler."));
+    }).unwrap_or_else(|_| print_warn("Unable to set the Ctrl+C handler"));
 
 	print_info(format!("Server started, listening on {}", listener.local_addr().unwrap()));
 
