@@ -37,7 +37,7 @@ pub fn set_meta_path(path: &str) {
 
 	let meta_path: String;
 
-	if !Path::new(path).exists() {
+	if !Path::new(path).exists() && path != defaults::DEFAULT_META_PATH {
 		print_warn(format!("Specified path \"{}\" does not exists, using default path.", path));
 
 		meta_path = defaults::DEFAULT_META_PATH.into();

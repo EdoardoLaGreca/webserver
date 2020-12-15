@@ -27,6 +27,7 @@ mod first_run;
 mod defaults;
 
 lazy_static!{
+	#[derive(Debug)]
 	pub static ref CONFIG: metadata::Config = metadata::Config::parse_metadata();
 }
 

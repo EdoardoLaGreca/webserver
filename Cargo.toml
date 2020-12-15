@@ -2,7 +2,7 @@
 name = "webserver"
 version = "1.0.0"
 authors = ["EdoardoLaGreca <lagrecaedoardo@gmail.com>"]
-description = "A simple webserver used to power elagreca.dev"
+description = "A simple webserver"
 edition = "2018"
 license = "BSD 3-Clause"
 

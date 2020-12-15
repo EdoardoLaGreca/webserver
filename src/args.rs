@@ -46,44 +46,47 @@ This flag gets priority over the -v option.")
 
 
 	// Parse CLI args
-	
-	// Silent mode
-	if matches.is_present("silent") {
-		set_verb_lvl(0);
-		return;
-	}
 
-	// Verbosity
-	let verb_val = matches.value_of("verbosity");
-	let mut parsed_verb_val: u8 = defaults::DEFAULT_VERB;
-
-	if verb_val != None {
-		print_info(format!("Verbosity level: {}", verb_val.unwrap()));
-
-		match verb_val.unwrap() {
-			"1" => {
-				parsed_verb_val = 1;
-			},
-			"2" => {
-				parsed_verb_val = 2;
-			},
-			"3" => {
-				parsed_verb_val = 3;
-			}
-			_ => {
-				print_warn(format!("Invalid verbosity level, using default value: 2."))
-			},
-		}
-	} else {
-		print_info(format!("Verbosity level not set, using default value: 2."));
-	}
-
-	set_verb_lvl(parsed_verb_val);
-
+	// meta.json path
 	if let Some(p) = matches.value_of("meta-path") {
 		metadata::set_meta_path(p);
 	} else {
 		metadata::set_meta_path(defaults::DEFAULT_META_PATH);
 	}
 	
+	// Silent mode
+	let mut is_silent = false;
+	if matches.is_present("silent") {
+		set_verb_lvl(0);
+		is_silent = true;
+	}
+
+	// Verbosity
+	if !is_silent {
+		let verb_val = matches.value_of("verbosity");
+		let mut parsed_verb_val: u8 = defaults::DEFAULT_VERB;
+
+		if verb_val != None {
+			print_info(format!("Verbosity level: {}", verb_val.unwrap()));
+
+			match verb_val.unwrap() {
+				"1" => {
+					parsed_verb_val = 1;
+				},
+				"2" => {
+					parsed_verb_val = 2;
+				},
+				"3" => {
+					parsed_verb_val = 3;
+				}
+				_ => {
+					print_warn(format!("Invalid verbosity level, using default value: 2."))
+				},
+			}
+		} else {
+			print_info(format!("Verbosity level not set, using default value: 2."));
+		}
+
+		set_verb_lvl(parsed_verb_val);
+	}
 }
