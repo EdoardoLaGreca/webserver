@@ -14,7 +14,7 @@ pub fn parse_args() {
 			.arg(Arg::with_name("verbosity")
 				.short("v")
 				.long("verbosity")
-				.long_help(format!(
+				.long_help(&format!(
 "Sets the level of verbosity.
 If no verbosity level is set or it's an invalid value,
 the default value ({}) will be used.
