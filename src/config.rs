@@ -1,6 +1,8 @@
 use json;
+use once_cell::sync::Lazy;
 
 use std::path::Path;
+use std::sync::RwLock;
 
 use crate::io_ops::get_file_content_string;
 use crate::printing::*;
@@ -8,6 +10,18 @@ use crate::defaults;
 
 static mut META_PATH: String = String::new();
 
+pub static CONFIG: Lazy<RwLock<Config>> = Lazy::new(|| 
+	RwLock::new(Config::default())
+);
+
+// Verbosity level
+// 0 = silent
+// 1 = Only errors
+// 2 = Errors and warnings
+// 3 = Errors, warnings and info
+// If no verbosity level is set or it's an invalid value, keep it at 2.
+// Note that if a library used to build this repo prints warning or error messages,
+// they won't be handled and will be printed even if the silent flag is enabled.
 #[derive(Clone, Debug, Default)]
 pub struct Config {
 	address: String,
@@ -59,8 +73,11 @@ pub fn get_meta_path() -> String {
 impl Config {
 
 	// If one or more required values are empty, use default values.
-	pub fn parse_metadata() -> Self {
-		print_info("Reading the JSON metadata file ({})...");
+	pub fn parse_metadata(verbosity: u8) -> Self {
+		// meta.json path
+		let meta_path = format!("{}{}", defaults::WWW, get_meta_path());
+
+		print_info(format!("Reading the JSON metadata file ({})...", meta_path));
 
 		let metadata_content = get_file_content_string(get_meta_path(), None);
 
@@ -68,8 +85,6 @@ impl Config {
 			print_warn("Failed reading metadata file. Using the default values.");
 			return Config::default()
 		}
-
-		print_info("Parsing the JSON metadata file...");
 		
 		let parsed_metadata = json::parse(&metadata_content.unwrap());
 
@@ -99,6 +114,8 @@ impl Config {
 				metadata["thread"].as_usize().unwrap()
 			}
 		};
+
+		config.verbosity = verbosity;
 
 		config.page_404_path = {
 			if metadata["page_404_path"].is_null() {
@@ -160,6 +177,8 @@ impl Config {
 			pgs_indx += 1;
 		}
 
+		print_info(format!("JSON metadata file parsed ({})", meta_path));
+
 		return config;
 	}
 
@@ -185,6 +204,10 @@ impl Config {
 
 	pub fn get_verbosity(&self) -> u8 {
 		self.verbosity
+	}
+
+	pub fn set_verbosity(&mut self, value: u8) {
+		self.verbosity = value;
 	}
 
 	pub fn get_page_404_path(&self) -> String {
