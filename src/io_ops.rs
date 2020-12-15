@@ -8,6 +8,11 @@ use crate::printing::*;
 // Extensions are written without the point character before
 pub fn get_file_content(filename: String, extension: Option<&str>) -> Result<Vec<u8>, ()> {
 
+	// Empty path, probably because a markdown file's source code was requested
+	if filename.is_empty() && extension == None {
+		return Err(());
+	}
+
 	let mut file_path: PathBuf = PathBuf::from(defaults::WWW);
 
 	// Add extension if needed
@@ -29,6 +34,8 @@ pub fn get_file_content(filename: String, extension: Option<&str>) -> Result<Vec
 		print_err(format!("Error while getting the file {}", file_path.to_str().unwrap()));
 		return Err(());
 	}
+
+	print_info(format!("Got {} from disk", file_path.to_str().unwrap()));
 
 	Ok(content.unwrap())
 }
