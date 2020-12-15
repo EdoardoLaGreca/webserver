@@ -13,10 +13,11 @@ I built this webserver for 3 reasons:
   - I want to write minimal and lightweight webpages in markdown and let the server compile them into HTML in real time.
   
 ## Features
+  - [x] A thread limit
   - [ ] A cache system which stores the most requested files in a directory (as HTML).
   - [ ] "*this page is also available in: ...*" to change the page language, based on `meta.json`.
   - [ ] An update method, either by uploading the repo on the crates registry or some package manager servers or by implementing a custom self-updater.
-  - [ ] A thread limit
+  - [ ] A template used to give instructions about the creation of the HTML structure.
 
 ## TODOs
   - [ ] Write a better documentation
