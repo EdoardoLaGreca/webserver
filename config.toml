@@ -1,0 +1,15 @@
+# NOTE: When specifying paths, you assume that the root path is www/, except if stated otherwise.
+
+[server]
+
+# Listen to this address for new connections
+address = "0.0.0.0:8080"
+
+# Threads in the thread pool
+threads = 5
+
+# Path of the page 404
+err404_path = "/404.md"
+
+# Title of the website, will be included in every page title
+title = "My website"
