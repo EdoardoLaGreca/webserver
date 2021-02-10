@@ -7,10 +7,7 @@ Cargo.lock
 
 /www/*
 !/www/index.md
-
-!/www/img/
-/www/img/*
-!/www/img/favicon.ico
+!/www/favicon.ico
 
 !/www/style/
 /www/style/*
