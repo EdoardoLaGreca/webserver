@@ -5,19 +5,20 @@ use std::io::prelude::*;
 
 use crate::printing::*;
 
-// Split a string to get keys and values out of it
-fn split_keyval(string: &str) -> Result<(&str, &str), ()> {
-	let keyval: Vec<&str> = string.split(": ").collect();
+// Split a header line to get keys and values out of it
+fn split_keyval(header_line: &str) -> Result<(&str, &str), ()> {
+	let keyval: Vec<&str> = header_line.split(": ").collect();
 
-	if keyval.len() == 2 { return Err(()) }
+	// The line couldn't be splitted
+	if keyval.len() == 1 || keyval.len() > 2 { return Err(()) }
 
-	return Ok((keyval[0], keyval[1]));
+	Ok((keyval[0], keyval[1]))
 }
 
 // Parse the text got from http into a Request
 pub fn parse_request(request: &str) -> Result<Request<String>, ()> {
 
-	// Divide the string in lines
+	// Divide the string into lines
 	let mut splitted_request: Vec<&str> = request.lines().collect();
 
 	// Empty request
@@ -28,28 +29,22 @@ pub fn parse_request(request: &str) -> Result<Request<String>, ()> {
 	// Divide the first line by spaces, it contains several info
 	let first_line: Vec<&str> = splitted_request[0].split(' ').collect();
 	
-	// Remove the first item, which is handled by first_line
+	// Remove the first item, which is memorized by first_line
 	splitted_request.remove(0);
 
+	// Build the request as libhttp::request::Builder
 	let mut builder: Builder = Builder::new()
 		.method(first_line[0])
 		.uri(first_line[1]);
-
-	// Count the header lines
-	let mut last_valid_line = -1;
 	
-	for key_val in &splitted_request {
-		// Split key_val to get keys and values
-		if let Ok((key, val)) = split_keyval(key_val) {
-			builder = builder.header(key, val);
-			last_valid_line += 1;
-		} else {
-			break
-		}
-	}
+	// Split lines to get keys and values
+	// The first invalid key-value pair will be interpreted as first
+	// line of the request body
+	while let Ok((key, val)) = split_keyval(splitted_request[0]) {
+		// Update the request builder with the request header
+		builder = builder.header(key, val);
 
-	// Remove the header
-	for _ in 0..last_valid_line {
+		// Remove the header line
 		splitted_request.remove(0);
 	}
 

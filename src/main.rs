@@ -7,12 +7,11 @@ use threadpool::ThreadPool;
 
 use std::net::{TcpListener, TcpStream};
 use std::io::prelude::*;
-use std::thread::sleep;
-use std::time::Duration;
 use std::time::Instant;
 use std::sync::{Arc, Mutex};
 
 use crate::printing::*;
+use crate::config::CONFIG;
 
 mod http;
 mod css;
@@ -41,8 +40,8 @@ fn main() {
 
 	print_info("Press Ctrl+C to close the server");
 
-	let threads_quantity: usize = config::CONFIG.read().unwrap().get_threads();
-	let address = config::CONFIG.read().unwrap().get_address();
+	let threads_quantity: usize = CONFIG.server.threads;
+	let address = &CONFIG.server.address;
 
 	let listener = TcpListener::bind(&address)
 		.expect(&format!("Cannot bind {}", address));
@@ -57,12 +56,12 @@ fn main() {
 	print_info(format!("Thread pool created, total threads: {}", threads_quantity));
 
 	// Set the Ctrl+C handler
-	let pool_ctrlc = pool.clone();
+	let pool_clone_ctrlc = pool.clone();
 	ctrlc::set_handler(move || {
 		println!("\nShutting down...");
 
 		// Join threads before shutting down
-		pool_ctrlc.lock().unwrap().join();
+		pool_clone_ctrlc.lock().unwrap().join();
 		
 		std::process::exit(0);
     }).unwrap_or_else(|_| print_warn("Unable to set the Ctrl+C handler"));
@@ -80,9 +79,6 @@ fn main() {
 				handle_stream(stream);
 			});
 		}
-
-		// No overhead CPU usage
-		sleep(Duration::from_millis(5));
 	}
 
 	// Shutdown the threadpool
@@ -96,6 +92,8 @@ fn handle_stream(mut stream: TcpStream) {
 	stream.read(&mut buffer).unwrap();
 
 	let current_time = Local::now().format("%H:%M:%S (UTC%:z)");
+	
+	// Performance metrics
 	let now = Instant::now();
 
 	print_info(format!("[{}] New request.", current_time));
