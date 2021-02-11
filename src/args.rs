@@ -1,7 +1,6 @@
 use clap::{App, Arg, ArgMatches};
 
 use crate::printing::*;
-use crate::config;
 use crate::defaults;
 
 pub fn parse_args() {
@@ -35,36 +34,23 @@ The -s flag gets priority over this option.", defaults::DEFAULT_VERB))
 "Enables the silent mode: no output gets printed at all.
 This flag gets priority over the -v option.")
 				.conflicts_with("verbosity"))
-			.arg(Arg::with_name("meta-path")
-				.long("meta-path")
-				.help("Specifies the path of meta.json")
-				.takes_value(true)
-				.value_name("PATH")
-				.multiple(false))
 			.get_matches()
 	};
 
 
 	// Parse CLI args
-
-	// meta.json path
-	if let Some(p) = matches.value_of("meta-path") {
-		config::set_meta_path(p);
-	} else {
-		config::set_meta_path(defaults::DEFAULT_META_PATH);
-	}
 	
 	// Silent mode
 	let mut is_silent = false;
 	if matches.is_present("silent") {
-		config::CONFIG.write().unwrap().set_verbosity(0);
+		unsafe { VERBOSITY = 0; }
 		is_silent = true;
 	}
 
 	// Verbosity
 	if !is_silent {
 		let verb_val = matches.value_of("verbosity");
-		config::CONFIG.write().unwrap().set_verbosity(defaults::DEFAULT_VERB);
+		unsafe { VERBOSITY = defaults::DEFAULT_VERB; }
 
 		if verb_val != None {
 			println!();
@@ -74,7 +60,7 @@ This flag gets priority over the -v option.")
 
 					// Set verbosity
 					let value = verb_val.unwrap().parse::<u8>().unwrap();
-					config::CONFIG.write().unwrap().set_verbosity(value);
+					unsafe { VERBOSITY = value; }
 
 					print_info(format!("Verbosity level: {}", verb_val.unwrap()));
 				},
@@ -86,8 +72,4 @@ This flag gets priority over the -v option.")
 			print_warn(format!("Verbosity level not set, using default value: {}.", defaults::DEFAULT_VERB));
 		}
 	}
-
-	// Init config using meta.json
-	let current_verbosity = config::CONFIG.read().unwrap().get_verbosity();
-	*config::CONFIG.write().unwrap() = config::Config::parse_metadata(current_verbosity);
 }
