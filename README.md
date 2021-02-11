@@ -62,17 +62,16 @@ For a help page, type this.
 ## Files and directories
 Coming soon...
 
-### `meta.json`
+### `config.toml`
 Coming soon...
 
 #### Default values
 This section contains all the default values that will be used in case no data is provided.
  
  - Verbosity: `2`
- - Markdown file: `markdown.scss` (in `www/style/`)
- - `address`: `127.0.0.1:80`
+ - Markdown file: `default.scss` (in `www/style/`)
+ - `address`: `127.0.0.1:8080`
  - `threads`: `4`
- - `meta.json` path: `www/meta.json`
  
 For more info, have a look at `src/defaults.rs`.
 
