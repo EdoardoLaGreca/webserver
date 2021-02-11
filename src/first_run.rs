@@ -1,18 +1,14 @@
 /*
 Server directory
 
+config.toml
 www/
-|
+|- favicon.ico
 |- index.md
-|- meta.json
-|- icon/
-|  |- favicon.ico
-|
-|- en/
-|  |- sample.md
+|- img/
 |
 |- style/
-   |- markdown.scss
+   |- default.scss
    |- font/
 */
 
@@ -31,7 +27,7 @@ pub fn check_files() {
 		// Check if the entity exists (can be anything: file, directory, etc...)
 		if !Path::new(entity).exists() {
 			if entity.ends_with("/") {
-				// Using create_dir_all() just in case (someone may forget to add an entity in `base`)
+				// Create a directory and all of its parent components if they are missing
 				fs::create_dir_all(entity).unwrap();
 			} else {
 				fs::File::create(entity).unwrap();
