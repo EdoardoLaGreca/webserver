@@ -2,11 +2,9 @@ use libhttp::Method;
 use mime_guess;
 use regex::Regex;
 
-use crate::html::{build_html_document, generate_title};
-use crate::io_ops::{get_file_content, get_file_content_string};
-use crate::config::{Config, CONFIG};
+use crate::html::md_to_html;
+use crate::io_ops::get_file_content;
 use crate::css::sass_to_css;
-use crate::printing::*;
 use crate::defaults;
 
 // Webserver routes
@@ -22,98 +20,48 @@ pub fn get_routes() -> Vec<Route> {
 		//		 }
 		//	 }
 		// ),
-		Route::new(
-			Method::GET, "/favicon.ico",
-			|_| {
-				if let Some(f_content) = get_checked_file_content("icon/favicon.ico".into(), None) {
-					Some((f_content, "image/x-icon".into(), 200))
-				} else {
-					None
-				}
-			}
-		),
 		Route::new( // Markdown pages, valid for index ("/") as well
 			Method::GET, r"^(/[0-9A-z-_]*)+",
 			|req_uri| {
 
-				// Remove the first character ('/') and return the markdown page name + language
-				let md_page_name = {
+				// Remove the first character ('/') to get the markdown page name
+				let md_page_path = {
 					if req_uri == "/" {
-						"index" // Index route ("/")
+						"index.md".into() // Index route ("/")
 					} else {
-						req_uri.strip_prefix('/').unwrap()
+						format!("{}.md", req_uri.strip_prefix('/').unwrap())
 					}
 				};
-				
 
-				let file_content = get_checked_file_content_string(md_page_name.into(), Some("md"));
+				let converted_md = md_to_html(&md_page_path);
 
-				if let None = file_content {
+				if let Err(_) = converted_md {
 					return None;
 				}
 
-				print_info(format!("Translating markdown file {}.md into HTML...", md_page_name));
-
-				// Get configuration from meta.json
-				let config_file = Config::parse_metadata(CONFIG.read().unwrap().get_verbosity());
-				let config = config_file.get_by_path(req_uri);
-
-				let converted_md = {
-					// Check if there is a configuration for this
-					// markdown file in meta.json
-					if let Some(c) = config {
-
-						let mut styles: Vec<String> = c.get_styles();
-						styles.push(defaults::DEFAULT_MD_STYLE.to_owned());
-
-						build_html_document(
-							&file_content.unwrap(),
-							&c.get_title(),
-							styles,
-							vec![],
-							Some(&c.get_lang())
-						)
-					} else {
-						let page_title = generate_title(req_uri);
-			
-						build_html_document(
-							&file_content.unwrap(),
-							&page_title,
-							vec![defaults::DEFAULT_MD_STYLE.to_owned()],
-							vec![],
-							None
-						)
-					}
-				};
-
-				print_info(format!("Markdown file {}.md translated into HTML", md_page_name));
-
-				Some((converted_md.as_bytes().to_vec(), "text/html".into(), 200))
+				Some((converted_md.unwrap().as_bytes().to_vec(), "text/html".into(), 200))
 			}
 		),
 		Route::new( // Other files (CSS, HTML, etc...) except Markdown
 			Method::GET, r"^(/.+\..+)",
 			|req_uri| {
 				
-				// Do not send markdown source code
-				if req_uri.ends_with(".md") {
-					print_warn("Requested Markdown source code won't be sent");
-					return None
-				}
-				
 				// Remove the first character ('/') and return the file
 				let file_name = req_uri.strip_prefix('/').unwrap();
 
-				let mg = mime_guess::from_path(file_name);
-				let mut mime_type: String;
+				if let Some(f_content) = get_checked_file_content(&file_name.into()) {
+					// Guess the MIME type
+					let mg = mime_guess::from_path(file_name);
+					let mut mime_type: String;
 
-				if let Some(t) = mg.first() {
-					mime_type = t.to_string();
-				} else {
-					mime_type = "*/*".into();
-				}
+					// The first guess is probably the most accurate
+					if let Some(t) = mg.first() {
+						mime_type = t.to_string();
+					} else {
+						mime_type = "*/*".into();
+					}
 
-				if let Some(f_content) = get_checked_file_content(file_name.into(), None) {
+					// Compile SCSS to CSS if needed
 					if file_name.ends_with(".scss") {
 						let final_content = sass_to_css(String::from_utf8(f_content).unwrap(), defaults::get_default_grass_options());
 						mime_type = "text/css".into();
@@ -165,43 +113,10 @@ impl Route {
 	}
 }
 
-// fn get_md_file_as_html<'a>(path: &str) -> Option<Vec<u8>> {
-
-//	 let html = get_md_file_as_html_string(path.into());
-
-//	 if let None = html {
-//		 return None;
-//	 }
-
-//	 let html_u = html.unwrap();
-
-//	 Some(html_u.as_bytes().to_owned())
-// }
-
-// fn get_md_file_as_html_string<'a>(path: &str) -> Option<String> {
-
-//	 let file_content = get_file_content_string(path.into(), None);
-
-//	 if let Err(_) = file_content {
-//		 return None;
-//	 }
-
-//	 Some(file_content.unwrap())
-// }
-
 // Gets the file and returns Some(...)/None based on the Result returned by get_file_content()
-fn get_checked_file_content(filename: String, extension: Option<&str>) -> Option<Vec<u8>> {
-	let file_content = get_file_content(filename, extension);
-
-	if let Err(_) = file_content {
-		return None;
-	}
-
-	Some(file_content.unwrap())
-}
-
-fn get_checked_file_content_string(filename: String, extension: Option<&str>) -> Option<String> {
-	let file_content = get_file_content_string(filename, extension);
+// The function(s) are wrappers that basically tell whether a file exists or not
+fn get_checked_file_content(path: &String) -> Option<Vec<u8>> {
+	let file_content = get_file_content(&path);
 
 	if let Err(_) = file_content {
 		return None;
