@@ -4,56 +4,28 @@ use std::path::PathBuf;
 use crate::defaults;
 use crate::printing::*;
 
-// Get the content of a file which is located in the www directory
-// Extensions are written without the point character before
-pub fn get_file_content(filename: String, extension: Option<&str>) -> Result<Vec<u8>, ()> {
+// Get the content of a file which is located in the WWW directory (see defaults.rs module)
+pub fn get_file_content(path: &String) -> Result<Vec<u8>, ()> {
 
-	// Empty path, probably because a markdown file's source code was requested
-	if filename.is_empty() && extension == None {
+	if path.is_empty() {
 		return Err(());
 	}
 
-	let mut file_path: PathBuf = PathBuf::from(defaults::WWW);
+	// Path that includes WWW (but still a relative path)
+	let mut complete_path: PathBuf = PathBuf::from(defaults::WWW);
 
-	// Add extension if needed
-	let filename_complete = {
-		if let Some(ext) = extension {
-			format!("{}.{}", filename, ext)
-		} else {
-			filename
-		}
-	};
+	complete_path.push(&path);
 
-	file_path.push(&filename_complete);
+	print_info(format!("Getting {} from disk...", complete_path.to_str().unwrap()));
 
-	print_info(format!("Getting {} from disk...", file_path.to_str().unwrap()));
-
-	let content = fs::read(&file_path);
+	let content = fs::read(&complete_path);
 
 	if let Err(_) = content {
-		print_err(format!("Error while getting the file {}", file_path.to_str().unwrap()));
+		print_err(format!("Error while getting the file {}", complete_path.to_str().unwrap()));
 		return Err(());
 	}
 
-	print_info(format!("Got {} from disk", file_path.to_str().unwrap()));
+	print_info(format!("Got {} from disk", complete_path.to_str().unwrap()));
 
 	Ok(content.unwrap())
-}
-
-// Same as the function get_file_content() above but returns a String
-pub fn get_file_content_string(filename: String, extension: Option<&str>) -> Result<String, ()>  {
-
-	let file_content = get_file_content(filename.clone(), extension);
-
-	if let Err(_) = file_content {
-		return Err(())
-	}
-
-	// Check if bytes can be converted into String
-	if let Ok(s) = String::from_utf8(file_content.unwrap()) {
-		Ok(s)
-	} else {
-		print_err(format!("Cannot read file {} as UTF-8. Not going to send it", filename));
-		Err(())
-	}
 }
