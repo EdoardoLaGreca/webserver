@@ -8,12 +8,9 @@ use crate::config::CONFIG;
 
 // Convert Markdown into HTML by using comrak
 // md_fc:				markdown file content
-// crk_opts:			comrak options
 // page_title:			HTML page title (<title> ... </title>)
-// ext_styles:			External style files (<link rel="stylesheet" href="...">)
-// emb_styles:			Embedded styles (<style> ... </style>)
-// page_lang:			Page language (<html lang="...">)
-fn build_html_document(md_fc: &str, page_title: &str, stylesheets: Vec<String>, page_lang: Option<&str>) -> String {
+// stylesheets:			Style files (<link rel="stylesheet" href="...">)
+fn build_html_document(md_fc: &str, page_title: &str, stylesheets: Vec<String>) -> String {
 
 	let mut html_body = markdown_to_html(
 		&md_fc,
@@ -44,23 +41,20 @@ fn build_html_document(md_fc: &str, page_title: &str, stylesheets: Vec<String>, 
 
 	let html_header: String = format!("<head>\n{}\n{}\n{}\n</head>", title, charset, html_styles.join("\n"));
 
-	let html_page_lang = {
-		match page_lang {
-			Some(lang) => lang.clone(),
-			None => "".into()
-		}
-	};
-
-	let final_html_document = format!("<!DOCTYPE html>\n<html lang=\"{}\">\n{}\n{}\n</html>", html_page_lang, html_header, html_body);
+	let final_html_document = format!("<!DOCTYPE html>\n{}\n{}\n</html>", html_header, html_body);
 
 	final_html_document
 }
 
 fn generate_title(path: &str) -> String {
-	// Get the last part of path (filename)
+	// Get the last part of path (filename) without file extension
 	let mut page_title = path
 		.split('/')
 		.last()
+		.unwrap()
+		.to_owned()
+		.split('.')
+		.nth(0)
 		.unwrap()
 		.to_owned();
 
@@ -104,7 +98,6 @@ pub fn md_to_html(file_path: &String) -> Result<String, ()> {
 		&file_content_str.unwrap(),
 		&page_title,
 		vec![defaults::DEFAULT_MD_STYLE.to_owned()],
-		None
 	);
 
 	print_info(format!("Markdown file {}.md translated into HTML", file_path));
