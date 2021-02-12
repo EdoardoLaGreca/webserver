@@ -2,16 +2,17 @@ extern crate toml;
 use once_cell::sync::Lazy;
 use serde_derive::Deserialize;
 
-pub const CONFIG: Lazy<Config> = Lazy::new(|| 
-	Config::new()
-);
+use crate::io_ops;
+
+pub const CONFIG: Lazy<Config> = Lazy::new(|| Config::new());
 
 #[derive(Deserialize)]
 pub struct Server {
 	pub address: String,
 	pub threads: usize,
-	pub err404_path: String,
-	pub title: String
+	pub err404_path: Path,
+	pub title: String,
+    pub www_path: Path
 }
 
 #[derive(Deserialize)]
@@ -23,9 +24,7 @@ impl Config {
 	// Returns a new Config instance
 	// Call this function only once in the whole program
 	fn new() -> Config {
-		let config_file_content = include_str!("../config.toml");
-
-		toml::from_str(config_file_content)
+		toml::from_str(get_config_file)
 			.expect(&format!("Couldn't load config.toml: missing/corrupted file or bad syntax."))
 	}
 }
