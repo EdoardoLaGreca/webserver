@@ -39,7 +39,7 @@ The hardware specified is _recommended_, not required.
 ***It is advised to run the server using the latest release, not the cloned repository. Use the following procedure only if you're interested in either the latest features or the development and contribution since it may be very unstable or it may not even compile at all.***  
 
 Dependencies:
- - Cargo: the Rust Language package manager. It can be installed through [Rustup](https://rustup.rs) or by using 
+ - Cargo: the Rust Language package manager. It can be installed through [Rustup](https://rustup.rs) or by using a package manager.
 
 Other dependencies are automatically downloaded, compiled and built by Cargo during compile-time.  
 If you're on Linux or a Unix-like OS (such as \*BSD) you should be able to install the dependencies using your OS package manager. No guarantees on Windows or other OSes.
@@ -63,16 +63,23 @@ For a help page, type this.
 Coming soon...
 
 ### `config.toml`
-Coming soon...
+This file provides a simple and intuitive way to set up the webserver. An example can be found [here](https://github.com/EdoardoLaGreca/webserver/blob/main/config.toml). This file is loaded on server startup, modifying the file without restarting the server won't make any change effective.
+
+#### `address`
+This is the address that the webserver will listen on. You may want to change the port in order to avoid specifying it every time you type the address (port 80 for HTTP, port 443 for HTTPS).
+
+#### `threads`
+Since the webserver uses a thread pool to provide content in an efficient way, you may want to specify the number of threads based on need. More threads means faster content delivery but more memory consumption.
+
+#### `err404_path`
+You may want to change the error 404 page name and path, here you can do it. The root directory is `www/`.
+
+#### `title`
+Here you specify the website title, it will be displayed through the `<title>` tag on each requested page.
 
 #### Default values
 This section contains all the default values that will be used in case no data is provided.
- 
- - Verbosity: `2`
- - Markdown file: `default.scss` (in `www/style/`)
- - `address`: `127.0.0.1:8080`
- - `threads`: `4`
- 
+
 For more info, have a look at `src/defaults.rs`.
 
 ## Contribution
