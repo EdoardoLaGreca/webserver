@@ -21,7 +21,7 @@ then
 	exit 1
 fi
 
-echo "!! MAKE SURE TO HAVE musl AND mingw-w64-gcc INSTALLED !!"
+echo "!! MAKE SURE TO HAVE mingw-w64-gcc INSTALLED !!"
 
 # Check if a binary exists
 check_bin() {
