@@ -6,4 +6,3 @@ Yes it's that easy and now that you know, enjoy.
 If you're stuck, typing
 	webserver -h
 may help you.
-Don't forget that if you're on Windows, you need to add ".exe" at the end of the executable name.
