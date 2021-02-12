@@ -13,3 +13,8 @@ err404_path = "/404.md"
 
 # Title of the website, will be included in every page title
 title = "My website"
+
+# This is the path of the www directory (a.k.a. the directory
+# where you put the files that will be available on the web), the
+# last path entity is the directory name and can be changed
+www_path = "www/"
