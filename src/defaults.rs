@@ -1,12 +1,13 @@
 use comrak::{ComrakOptions, ComrakExtensionOptions, ComrakParseOptions, ComrakRenderOptions};
 use grass::{Options, OutputStyle};
 
+// NOTE: When specifying paths, you assume that the root path is WWW, except if stated otherwise.
+
 // DO NOT write the "WWW/style/" part
 pub static DEFAULT_MD_STYLE: &str = "default.scss";
 
 pub static WWW: &str = "www/";
 
-// DO NOT write the "WWW/" part
 pub static DEFAULT_ADDRESS: &str = "127.0.0.1:80";
 pub static DEFAULT_THREADS: usize = 4;
 pub static DEFAULT_VERB: u8 = 2;
@@ -25,7 +26,7 @@ lazy_static!{
 		format!("{}style/font/", WWW),
 	];
 
-	// See https://docs.rs/comrak/0.9.0/comrak/struct.ComrakOptions.html
+	// See https://docs.rs/comrak/latest/comrak/struct.ComrakOptions.html
 	pub static ref COMRAK_OPTIONS: ComrakOptions = {
 		ComrakOptions {
 			extension: ComrakExtensionOptions {
@@ -37,7 +38,8 @@ lazy_static!{
 				superscript: true,
 				header_ids: None,
 				footnotes: true,
-				description_lists: false
+				description_lists: false,
+				front_matter_delimiter: None
 			},
 			parse: ComrakParseOptions {
 				smart: true,
