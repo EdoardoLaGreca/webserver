@@ -38,7 +38,7 @@ pub fn get_file_content<P: AsRef<Path>>(path: P) -> Result<Vec<u8>, ()> {
 	print_info(format!("Getting {} from disk...", complete_path.to_str().unwrap()));
 
 	// Check if the file exists
-	if !path.as_ref().exists() {
+	if !complete_path.exists() {
 		print_warn(format!("File {} not found.", path.as_ref().to_str().unwrap()));
 		return Err(());
 	}
