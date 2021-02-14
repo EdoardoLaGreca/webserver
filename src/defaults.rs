@@ -16,16 +16,6 @@ pub static DEFAULT_404_PAGE_CONTENT: &str = "ERROR 404: Not found.";
 pub static DEFAULT_CONFIG_PATH: &str = "config.toml";
 
 lazy_static!{
-	// Directories always end with "/", otherwise they will be recognized as files
-	// Specify a directory only if it needs to be empty
-	pub static ref BASE: [String; 5] = [
-		"config.toml".into(),
-		format!("{}index.md", WWW),
-		format!("{}favicon.ico", WWW),
-		format!("{}style/default.scss", WWW),
-		format!("{}style/font/", WWW),
-	];
-
 	// See https://docs.rs/comrak/latest/comrak/struct.ComrakOptions.html
 	pub static ref COMRAK_OPTIONS: ComrakOptions = {
 		ComrakOptions {
