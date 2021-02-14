@@ -91,7 +91,14 @@ pub fn md_to_html(file_path: &String) -> Result<String, ()> {
 
 	print_info(format!("Translating markdown file {}.md into HTML...", file_path));
 
-	let page_title = format!("{} | {}", CONFIG.server.title, generate_title(&file_path));
+	// Empty title if not specified in config.toml
+	let page_title = {
+		if !CONFIG.server.title.is_empty() {
+			format!("{} | {}", CONFIG.server.title, generate_title(&file_path))
+		} else {
+			"".into()
+		}
+	};
 
 	// Markdown file translated in HTML
 	let html_translation = build_html_document(
