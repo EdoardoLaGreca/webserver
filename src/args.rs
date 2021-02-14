@@ -34,6 +34,13 @@ The -s flag gets priority over this option.", defaults::DEFAULT_VERB))
 "Enables the silent mode: no output gets printed at all.
 This flag gets priority over the -v option.")
 				.conflicts_with("verbosity"))
+			//.arg(Arg::with_name("config")
+			//	.short("c")
+			//	.long("config")
+			//	.help("Takes the configuration file from the specified path.")
+			//	.multiple(false)
+			//	.takes_value(true)
+			//	.value_name("PATH"))
 			.get_matches()
 	};
 
