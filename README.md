@@ -12,7 +12,8 @@ I built this webserver for 3 reasons:
   - I want to write minimal and lightweight webpages in markdown and let the server "compile" them into HTML in real time.
   
 ## Features
-  - [x] A thread limit
+  - [x] A thread limit.
+  - [ ] SSL/TLS support through [rustls](https://docs.rs/rustls/latest/rustls/).
   - [ ] A cache system which stores the most requested files in a directory (as HTML).
   - [ ] An update method, either by uploading the repo on the crates registry or some package manager servers or by implementing a custom self-updater.
   - [ ] A template used to give instructions about the creation of the HTML structure (inspired by HTML custom tags).
