@@ -3,11 +3,27 @@ use once_cell::sync::Lazy;
 use serde_derive::Deserialize;
 
 use crate::io_ops;
-use crate::printing::print_err;
+use crate::defaults;
 
-pub const CONFIG: Lazy<Config> = Lazy::new(|| Config::new());
+pub const CONFIG: Lazy<Config> = Lazy::new(|| Config::parse());
+
+// ParsedConfig and ParsedServer structs are used to parse the config.toml file
+// The real config is kept through Config and Server structs
 
 #[derive(Deserialize)]
+struct ParsedServer {
+	address: Option<String>,
+	threads: Option<usize>,
+	err404_path: Option<String>,
+	title: Option<String>,
+    www_path: Option<String>
+}
+
+#[derive(Deserialize)]
+struct ParsedConfig {
+	server: Option<ParsedServer>,
+}
+
 pub struct Server {
 	pub address: String,
 	pub threads: usize,
@@ -16,7 +32,6 @@ pub struct Server {
     pub www_path: String
 }
 
-#[derive(Deserialize)]
 pub struct Config {
 	pub server: Server,
 }
@@ -24,16 +39,29 @@ pub struct Config {
 impl Config {
 	// Returns a new Config instance
 	// Call this function only once in the whole program
-	fn new() -> Config {
+	pub fn parse() -> Config {
 		let config_file_content = io_ops::get_config_file();
 
-		if let Err(_) = config_file_content {
-			print_err("Couldn't open/read config.toml");
-			std::process::exit(1);
-		}
+		let config_file_content = config_file_content.expect(&format!("Couldn't open/read {}", defaults::DEFAULT_CONFIG_PATH));
 
-		toml::from_str(&config_file_content.unwrap())
-			.expect(&format!("Couldn't parse config.toml: bad syntax."))
+		let config: ParsedConfig = toml::from_str(&config_file_content)
+			.expect(&format!("Couldn't parse {}: bad syntax.", defaults::DEFAULT_CONFIG_PATH));
+
+		// Take a ParsedConfig instance and put default values on Nones
+		// ParsedConfig -> Config
+		Config {
+			server: {
+				let server = config.server.unwrap();
+
+				Server {
+					address: server.address.unwrap_or(defaults::DEFAULT_ADDRESS.into()),
+					threads: server.threads.unwrap_or(defaults::DEFAULT_THREADS),
+					err404_path: server.err404_path.unwrap_or(defaults::DEFAULT_PAGE_404_PATH.into()),
+					title: server.title.unwrap_or("".into()),
+					www_path: server.www_path.unwrap_or(defaults::WWW.into()),
+				}
+			}
+		}
 	}
 }
 
