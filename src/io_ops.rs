@@ -39,7 +39,7 @@ pub fn get_file_content<P: AsRef<Path>>(path: P) -> Result<Vec<u8>, ()> {
 
 	// Check if the file exists
 	if !path.as_ref().exists() {
-		print_warn(format!("File {} does not exist.", path.as_ref().to_str().unwrap()));
+		print_warn(format!("File {} not found.", path.as_ref().to_str().unwrap()));
 		return Err(());
 	}
 
