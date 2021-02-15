@@ -89,7 +89,7 @@ pub fn md_to_html(file_path: &String) -> Result<String, ()> {
 		return Err(());
 	}
 
-	print_info(format!("Translating markdown file {}.md into HTML...", file_path));
+	print_info(format!("Translating markdown file {} into HTML...", file_path));
 
 	// Empty title if not specified in config.toml
 	let page_title = {
@@ -106,8 +106,6 @@ pub fn md_to_html(file_path: &String) -> Result<String, ()> {
 		&page_title,
 		vec![defaults::DEFAULT_MD_STYLE.to_owned()],
 	);
-
-	print_info(format!("Markdown file {}.md translated into HTML", file_path));
 
 	Ok(html_translation)
 }
