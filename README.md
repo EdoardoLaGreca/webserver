@@ -40,7 +40,7 @@ The hardware specified is _recommended_, not required.
 ***It is advised to run the server using the latest release, not the cloned repository. Use the following procedure only if you're interested in either the latest features or the development and contribution since it may be very unstable or it may not even compile at all.***  
 
 Dependencies:
- - Cargo: the Rust Language package manager. It can be installed through [Rustup](https://rustup.rs) or by using a package manager.
+ - Cargo: the Rust Language package manager. It can be installed either through [Rustup](https://rustup.rs) or by using a package manager.
 
 Other dependencies are automatically downloaded, compiled and built by Cargo during compile-time.  
 If you're on Linux or a Unix-like OS (such as \*BSD) you should be able to install the dependencies using your OS package manager. No guarantees on Windows or other OSes.
@@ -73,15 +73,22 @@ This is the address that the webserver will listen on. You may want to change th
 Since the webserver uses a thread pool to provide content in an efficient way, you may want to specify the number of threads based on need. More threads means faster content delivery but more memory consumption.
 
 #### `err404_path`
-You may want to change the error 404 page name and path, here you can do it. The root directory is `www/`.
+You may want to change the error 404 page name and path, here you can do it. The working directory (as in `pwd`) is defined through `www_path`.
 
 #### `title`
 Here you specify the website title, it will be displayed through the `<title>` tag on each requested page.
 
-#### Default values
-This section contains all the default values that will be used in case no data is provided.
+#### `www_path`
+You can rename and/or change the location of the `www/` path. The path must end with the `/` character. The files outside this directory won't be accessible by http(s) requests.
 
-For more info, have a look at `src/defaults.rs`.
+#### Default values
+This section contains all the default values that will be used in case no data is provided in `config.toml`.
+
+ - `address`: `"127.0.0.1:80"`
+ - `threads`: `4`
+ - `err404_path`: `"404.md"`
+ - `title`: `""` (no title)
+ - `www_path`: `"www/"`
 
 ## Contribution
 The main way to contribute is through issues.  
