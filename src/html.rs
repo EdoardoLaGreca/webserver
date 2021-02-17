@@ -1,10 +1,38 @@
-use comrak::markdown_to_html;
+use comrak::{ComrakOptions, ComrakExtensionOptions, ComrakParseOptions, ComrakRenderOptions, markdown_to_html};
 use regex::Regex;
 
 use crate::io_ops::get_file_content;
-use crate::defaults;
 use crate::printing::print_info;
-use crate::config::CONFIG;
+use crate::config::{self, CONFIG};
+
+// See https://docs.rs/comrak/latest/comrak/struct.ComrakOptions.html
+const COMRAK_OPTIONS: ComrakOptions = {
+	ComrakOptions {
+		extension: ComrakExtensionOptions {
+			strikethrough: true,
+			tagfilter: false,
+			table: true,
+			autolink: true,
+			tasklist: true,
+			superscript: true,
+			header_ids: None,
+			footnotes: true,
+			description_lists: false,
+			front_matter_delimiter: None
+		},
+		parse: ComrakParseOptions {
+			smart: true,
+			default_info_string: None
+		},
+		render: ComrakRenderOptions {
+			hardbreaks: true,
+			github_pre_lang: true,
+			width: 80,
+			unsafe_: false,
+			escape: false
+		}
+	}
+};
 
 // Convert Markdown into HTML by using comrak
 // md_fc:				markdown file content
@@ -14,7 +42,7 @@ fn build_html_document(md_fc: &str, page_title: &str, stylesheets: Vec<String>) 
 
 	let mut html_body = markdown_to_html(
 		&md_fc,
-		&defaults::COMRAK_OPTIONS
+		&COMRAK_OPTIONS
 	);
 
 	// Add enclosing body tags
@@ -104,7 +132,7 @@ pub fn md_to_html(file_path: &String) -> Result<String, ()> {
 	let html_translation = build_html_document(
 		&file_content_str.unwrap(),
 		&page_title,
-		vec![defaults::DEFAULT_MD_STYLE.to_owned()],
+		vec![config::DEFAULT_MD_STYLE.to_owned()],
 	);
 
 	Ok(html_translation)
