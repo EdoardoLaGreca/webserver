@@ -1,4 +1,4 @@
-use grass;
+use grass::OutputStyle;
 use crate::printing::*;
 
 // Use the grass library to compile Sass to CSS
@@ -13,4 +13,10 @@ pub fn sass_to_css(file_content: String, options: grass::Options) -> String {
 	} else {
 		return css.unwrap();
 	}
+}
+
+pub fn get_default_grass_options() -> grass::Options<'static> {
+	grass::Options::default()
+		.style(OutputStyle::Compressed)
+		.quiet(false)
 }
