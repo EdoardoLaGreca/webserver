@@ -2,7 +2,6 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use crate::config;
-use crate::defaults;
 use crate::printing::*;
 
 // Check if a file can be sent by the webserver by checking if it's inside WWW
@@ -19,7 +18,7 @@ fn is_file_accessible<P: AsRef<Path>>(path: P) -> bool {
 // Returns the config file's content (config.toml)
 // This is the only function that can return a file placed outside WWW
 pub fn get_config_file() -> Result<String, ()> {
-	let file_content = fs::read_to_string(Path::new(defaults::DEFAULT_CONFIG_PATH));
+	let file_content = fs::read_to_string(Path::new(config::DEFAULT_CONFIG_PATH));
 
 	if let Ok(c) = file_content {
 		return Ok(c);
