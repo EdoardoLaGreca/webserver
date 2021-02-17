@@ -4,7 +4,7 @@
 use colored::Colorize;
 use lazy_static;
 
-use crate::defaults;
+use crate::config::DEFAULT_VERB;
 
 lazy_static!{
 	pub static ref ERROR_MARKER: String = "[E]".red().to_string();
@@ -12,7 +12,7 @@ lazy_static!{
 	pub static ref INFO_MARKER: String = "[I]".clear().to_string();
 }
 
-pub static mut VERBOSITY: u8 = defaults::DEFAULT_VERB;
+pub static mut VERBOSITY: u8 = DEFAULT_VERB;
 
 pub fn print_markers() {
 	unsafe {

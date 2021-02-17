@@ -23,7 +23,6 @@ mod config;
 mod printing;
 mod args;
 mod first_run;
-mod defaults;
 
 fn main() {
 	args::parse_args();

@@ -1,7 +1,7 @@
 use clap::{App, Arg, ArgMatches};
 
 use crate::printing::*;
-use crate::defaults;
+use crate::config;
 
 pub fn parse_args() {
 
@@ -21,7 +21,7 @@ Possible values:
  1 = Only errors
  2 = Errors and warnings
  3 = Errors, warnings and info
-The -s flag gets priority over this option.", defaults::DEFAULT_VERB))
+The -s flag gets priority over this option.", config::DEFAULT_VERB))
 				.multiple(false)
 				.takes_value(true)
 				//.default_value("2")
@@ -57,7 +57,7 @@ This flag gets priority over the -v option.")
 	// Verbosity
 	if !is_silent {
 		let verb_val = matches.value_of("verbosity");
-		unsafe { VERBOSITY = defaults::DEFAULT_VERB; }
+		unsafe { VERBOSITY = config::DEFAULT_VERB; }
 
 		if verb_val != None {
 			println!();
@@ -72,11 +72,11 @@ This flag gets priority over the -v option.")
 					print_info(format!("Verbosity level: {}", verb_val.unwrap()));
 				},
 				_ => {
-					print_warn(format!("Invalid verbosity level, using default value: {}.", defaults::DEFAULT_VERB));
+					print_warn(format!("Invalid verbosity level, using default value: {}.", config::DEFAULT_VERB));
 				},
 			}
 		} else {
-			print_warn(format!("Verbosity level not set, using default value: {}.", defaults::DEFAULT_VERB));
+			print_warn(format!("Verbosity level not set, using default value: {}.", config::DEFAULT_VERB));
 		}
 	}
 }

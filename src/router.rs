@@ -4,8 +4,7 @@ use regex::Regex;
 
 use crate::html::md_to_html;
 use crate::io_ops::get_file_content;
-use crate::css::sass_to_css;
-use crate::defaults;
+use crate::css::{get_default_grass_options, sass_to_css};
 
 // Webserver routes
 pub fn get_routes() -> Vec<Route> {
@@ -63,7 +62,7 @@ pub fn get_routes() -> Vec<Route> {
 
 					// Compile SCSS to CSS if needed
 					if file_name.ends_with(".scss") {
-						let final_content = sass_to_css(String::from_utf8(f_content).unwrap(), defaults::get_default_grass_options());
+						let final_content = sass_to_css(String::from_utf8(f_content).unwrap(), get_default_grass_options());
 						mime_type = "text/css".into();
 	
 						return Some((final_content.as_bytes().to_vec(), mime_type, 200))

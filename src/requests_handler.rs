@@ -2,9 +2,8 @@ use http::{Request, Response, Method};
 
 use crate::router::get_routes;
 use crate::printing::*;
-use crate::config::CONFIG;
+use crate::config::{self, CONFIG};
 use crate::io_ops;
-use crate::defaults;
 use crate::html::md_to_html;
 
 fn error_404() -> (Vec<u8>, String, u16) {
@@ -32,7 +31,7 @@ fn error_404() -> (Vec<u8>, String, u16) {
 	} else {
 		print_warn(format!("404 error page (\"{}\") does not exist, using default page content.", CONFIG.server.err404_path));
 
-		(defaults::DEFAULT_404_PAGE_CONTENT.into(), "text/plain".into(), 404)
+		(config::DEFAULT_404_PAGE_CONTENT.into(), "text/plain".into(), 404)
 	}
 }
 
