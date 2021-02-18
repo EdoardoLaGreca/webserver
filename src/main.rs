@@ -25,10 +25,6 @@ mod args;
 mod first_run;
 
 fn main() {
-	args::parse_args();
-
-	print_separator();
-
 	// Create files if they don't exist
 	first_run::check_files();
 
