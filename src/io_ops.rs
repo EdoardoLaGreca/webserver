@@ -1,12 +1,12 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use crate::config;
+use crate::config::{self, CONFIG};
 use crate::printing::*;
 
 // Check if a file can be sent by the webserver by checking if it's inside WWW
 fn is_file_accessible<P: AsRef<Path>>(path: P) -> bool {
-	let root_dir = Path::new(&config::CONFIG.server.www_path).canonicalize().unwrap();
+	let root_dir = Path::new(&CONFIG.server.www_path).canonicalize().unwrap();
 
 	if path.as_ref().canonicalize().unwrap().starts_with(&root_dir) {
 		return true;
@@ -31,7 +31,7 @@ pub fn get_config_file() -> Result<String, ()> {
 pub fn get_file_content<P: AsRef<Path>>(path: P) -> Result<Vec<u8>, ()> {
 
 	// Path that includes WWW (but technically still a relative path)
-	let mut complete_path: PathBuf = PathBuf::from(&config::CONFIG.server.www_path);
+	let mut complete_path: PathBuf = PathBuf::from(&CONFIG.server.www_path);
 	complete_path.push(&path);
 
 	print_info(format!("Getting {} from disk...", complete_path.to_str().unwrap()));
