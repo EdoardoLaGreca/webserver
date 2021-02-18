@@ -9,19 +9,44 @@ license = "BSD 3-Clause"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# For Request and Response data types
 http = "0.2.3"
+
+# To route the requests
 regex = "1.4.3"
-lazy_static = "1.4.0"
+
+# Lazy evaluation
 once_cell = "1.5.2"
+lazy_static = "1.4.0"
+
+# To send the correct MIME string in HTTP responses
 mime_guess = "2.0.3"
+
+# To measure elapsed time
 chrono = "0.4.19"
-comrak = "0.9.1" # MD -> HTML
+
+# MD -> HTML
+comrak = "0.9.1"
+
+# For config.toml
 toml = "0.5.8"
 serde = "1.0.123"
 serde_derive = "1.0.123"
+
+# To color output
 colored = "2.0.0"
+
+# To parse SCSS into CSS
 grass = "0.10.4"
+
+# To parse command line arguments
 clap = "2.33.3"
+
+# To easily create a thread pool
 threadpool = "1.8.1"
+
+# To handle Ctrl+C
 ctrlc = "3.1.7"
+
+# To implement SSL/TLS
 rustls = "0.19.0"
