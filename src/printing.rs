@@ -4,7 +4,7 @@
 use colored::Colorize;
 use lazy_static;
 
-use crate::config::DEFAULT_VERB;
+use crate::config::CONFIG;
 
 lazy_static!{
 	pub static ref ERROR_MARKER: String = "[E]".red().to_string();
@@ -12,55 +12,37 @@ lazy_static!{
 	pub static ref INFO_MARKER: String = "[I]".clear().to_string();
 }
 
-pub static mut VERBOSITY: u8 = DEFAULT_VERB;
-
 pub fn print_markers() {
-	unsafe {
-		if VERBOSITY > 0 {
-			println!("{} {}", *ERROR_MARKER, "<- Error");
-			if VERBOSITY > 1 {
-				println!("{} {}", *WARNING_MARKER, "<- Warning");
-				if VERBOSITY > 2 {
-					println!("{} {}", *INFO_MARKER, "<- Info");
-				}
-			}
-		}
-	}
+	print_err("<- Error");
+	print_warn("<- Warning");
+	print_info("<- Info");
 }
 
 // Used to print an error to screen.
 pub fn print_err<S: Into<String>>(text: S) {
-	unsafe {
-		if VERBOSITY >= 1 {
-			eprintln!("{}", format!("{} {}", *ERROR_MARKER, text.into()));
-		}
+	if CONFIG.printing.verbosity >= 1 {
+		eprintln!("{}", format!("{} {}", *ERROR_MARKER, text.into()));
 	}
 }
 
 // Used to print a warning message to screen.
 pub fn print_warn<S: Into<String>>(text: S) {
-	unsafe {
-		if VERBOSITY >= 2 {
-			println!("{}", format!("{} {}", *WARNING_MARKER, text.into()));
-		}
+	if CONFIG.printing.verbosity >= 2 {
+		println!("{}", format!("{} {}", *WARNING_MARKER, text.into()));
 	}
 }
 
 // Used to print an information to screen.
 pub fn print_info<S: Into<String>>(text: S) {
-	unsafe {
-		if VERBOSITY >= 3 {
-			println!("{}", format!("{} {}", *INFO_MARKER, text.into()));
-		}
+	if CONFIG.printing.verbosity >= 3 {
+		println!("{}", format!("{} {}", *INFO_MARKER, text.into()));
 	}
 }
 
 // Prints '\n'
 pub fn print_separator() {
-	unsafe {
-		// No need to print separators without output
-		if VERBOSITY != 0 {
-			println!();
-		}
+	// No need to print separators without output
+	if CONFIG.printing.verbosity != 0 {
+		println!();
 	}
 }
