@@ -3,7 +3,7 @@ use clap::{App, Arg, ArgMatches};
 use crate::printing::*;
 use crate::config;
 
-pub fn parse_args() {
+pub fn parse_args() -> config::ParsedArgs {
 
 	let matches: ArgMatches = {
 		App::new("webserver")
@@ -33,7 +33,14 @@ The -s flag gets priority over this option.", config::DEFAULT_VERB))
 				.long_help(
 "Enables the silent mode: no output gets printed at all.
 This flag gets priority over the -v option.")
-				.conflicts_with("verbosity"))
+				.conflicts_with("verbosity")
+				.multiple(false)
+				.takes_value(false))
+			.arg(Arg::with_name("no-tls")
+				.long("no-tls")
+				.help("No SSL/TLS in HTTP requests.")
+				.multiple(false)
+				.takes_value(false))
 			//.arg(Arg::with_name("config")
 			//	.short("c")
 			//	.long("config")
@@ -46,18 +53,27 @@ This flag gets priority over the -v option.")
 
 
 	// Parse CLI args
+	let mut args_config = config::ParsedArgs {
+		use_tls: config::DEFAULT_USE_TLS,
+		verbosity: config::DEFAULT_VERB
+	};
+
+	// HTTP mode (no TLS)
+	if matches.is_present("no-https") {
+		args_config.use_tls = false;
+	}
 	
 	// Silent mode
 	let mut is_silent = false;
 	if matches.is_present("silent") {
-		unsafe { VERBOSITY = 0; }
+		args_config.verbosity = 0;
 		is_silent = true;
 	}
 
 	// Verbosity
 	if !is_silent {
 		let verb_val = matches.value_of("verbosity");
-		unsafe { VERBOSITY = config::DEFAULT_VERB; }
+		args_config.verbosity = config::DEFAULT_VERB;
 
 		if verb_val != None {
 			println!();
@@ -67,7 +83,7 @@ This flag gets priority over the -v option.")
 
 					// Set verbosity
 					let value = verb_val.unwrap().parse::<u8>().unwrap();
-					unsafe { VERBOSITY = value; }
+					args_config.verbosity = value;
 
 					print_info(format!("Verbosity level: {}", verb_val.unwrap()));
 				},
@@ -79,4 +95,6 @@ This flag gets priority over the -v option.")
 			print_warn(format!("Verbosity level not set, using default value: {}.", config::DEFAULT_VERB));
 		}
 	}
+
+	args_config
 }
