@@ -1,7 +1,7 @@
 use http::{Request, Response, Method};
 
 use crate::router::get_routes;
-use crate::printing::*;
+use crate::printing::{print_msg, MsgType};
 use crate::config::{self, CONFIG};
 use crate::io_ops;
 use crate::html::md_to_html;
@@ -29,7 +29,7 @@ fn error_404() -> (Vec<u8>, String, u16) {
 
 		(content, mime_type, 404)
 	} else {
-		print_warn(format!("404 error page (\"{}\") does not exist, using default page content.", CONFIG.server.err404_path));
+		print_msg(format!("404 error page (\"{}\") does not exist, using default page content.", CONFIG.server.err404_path), MsgType::Warning);
 
 		(config::DEFAULT_404_PAGE_CONTENT.into(), "text/plain".into(), 404)
 	}
@@ -44,14 +44,14 @@ fn choose_route<'a>(req_method: &Method, req_uri: &str) -> Option<(Vec<u8>, Stri
 		}
 	}
 
-	print_err(format!("Route \"{} {}\" not found.", req_method, req_uri));
+	print_msg(format!("Route \"{} {}\" not found.", req_method, req_uri), MsgType::Error);
 	None
 }
 
 // Returns: body content, content MIME type (html, plain text, etc...), status code
 fn handle_request<'a>(req_method: &Method, req_uri: &str) -> (Vec<u8>, String, u16) {
 
-	print_info(format!("Request: {} {}", req_method.to_string(), req_uri));
+	print_msg(format!("Request: {} {}", req_method.to_string(), req_uri), MsgType::Info);
 
 	let response: Option<(Vec<u8>, String, u16)> = choose_route(req_method, req_uri);
 

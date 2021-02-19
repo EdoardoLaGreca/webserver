@@ -16,7 +16,7 @@ use std::path::Path;
 use std::fs;
 
 use crate::config::CONFIG;
-use crate::printing::print_err;
+use crate::printing::{print_msg, MsgType};
 
 // Check if all the files needed to run are available
 // true = ok
@@ -44,12 +44,12 @@ pub fn check_files() {
 			if path.ends_with("/") {
 				// Create a directory and all of its parent components if they are missing
 				if let Err(_) = fs::create_dir_all(path) {
-					print_err(format!("Unable to create {}", path));
+					print_msg(format!("Unable to create {}", path), MsgType::Error);
 					std::process::exit(1);
 				}
 			} else {
 				if let Err(_) = fs::File::create(path) {
-					print_err(format!("Unable to create {}", path));
+					print_msg(format!("Unable to create {}", path), MsgType::Error);
 					std::process::exit(1);
 				}
 

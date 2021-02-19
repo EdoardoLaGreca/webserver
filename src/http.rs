@@ -3,7 +3,7 @@ use http::{Request, Response, request::Builder};
 use std::net::TcpStream;
 use std::io::prelude::*;
 
-use crate::printing::*;
+use crate::printing::{print_msg, MsgType};
 
 // Split a header line to get keys and values out of it
 fn split_keyval(header_line: &str) -> Result<(&str, &str), ()> {
@@ -81,6 +81,6 @@ pub fn send_response(mut stream: TcpStream, response: Response<Vec<u8>>) {
 
 	// Send the response
 	if let Err(_) = stream.write(final_response.as_slice()) {
-		print_err("Failed to send response")
+		print_msg("Failed to send response", MsgType::Error);
 	}
 }

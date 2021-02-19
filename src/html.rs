@@ -2,7 +2,7 @@ use comrak::{ComrakOptions, ComrakExtensionOptions, ComrakParseOptions, ComrakRe
 use regex::Regex;
 
 use crate::io_ops::get_file_content;
-use crate::printing::print_info;
+use crate::printing::{print_msg, MsgType};
 use crate::config::{self, CONFIG};
 
 // See https://docs.rs/comrak/latest/comrak/struct.ComrakOptions.html
@@ -117,7 +117,7 @@ pub fn md_to_html(file_path: &String) -> Result<String, ()> {
 		return Err(());
 	}
 
-	print_info(format!("Translating markdown file {} into HTML...", file_path));
+	print_msg(format!("Translating markdown file {} into HTML...", file_path), MsgType::Info);
 
 	// Empty title if not specified in config.toml
 	let page_title = {

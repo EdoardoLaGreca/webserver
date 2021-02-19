@@ -33,7 +33,7 @@ fn main() {
 
 	print_separator();
 
-	print_info("Press Ctrl+C to close the server");
+	print_msg("Press Ctrl+C to close the server", MsgType::Info);
 
 	let threads_quantity: usize = CONFIG.server.threads;
 	let address = &CONFIG.server.address;
@@ -48,7 +48,7 @@ fn main() {
 		ThreadPool::new(threads_quantity)
 	));
 
-	print_info(format!("Thread pool created, total threads: {}", threads_quantity));
+	print_msg(format!("Thread pool created, total threads: {}", threads_quantity), MsgType::Info);
 
 	// Set the Ctrl+C handler
 	let pool_clone_ctrlc = pool.clone();
@@ -59,9 +59,9 @@ fn main() {
 		pool_clone_ctrlc.lock().unwrap().join();
 		
 		std::process::exit(0);
-    }).unwrap_or_else(|_| print_warn("Unable to set the Ctrl+C handler"));
+    }).unwrap_or_else(|_| print_msg("Unable to set the Ctrl+C handler", MsgType::Warning));
 
-	print_info(format!("Server started, listening on {}", listener.local_addr().unwrap()));
+	print_msg(format!("Server started, listening on {}", listener.local_addr().unwrap()), MsgType::Info);
 
 	for stream_res in listener.incoming() {
 
@@ -91,8 +91,8 @@ fn handle_stream(mut stream: TcpStream) {
 	// Performance metrics
 	let now = Instant::now();
 
-	print_info(format!("[{}] New request.", current_time));
-	print_info(format!("Client address: {}", stream.peer_addr().unwrap().to_string().green()));
+	print_msg(format!("[{}] New request.", current_time), MsgType::Info);
+	print_msg(format!("Client address: {}", stream.peer_addr().unwrap().to_string().green()), MsgType::Info);
 
 	// Elaborate the request
 	let packet_content = &String::from_utf8(buffer.to_vec()).unwrap();
@@ -106,7 +106,7 @@ fn handle_stream(mut stream: TcpStream) {
 
 	let elapsed = now.elapsed();
 
-	print_info(format!("Completed in {}ms ({})", elapsed.as_millis(), {
+	print_msg(format!("Completed in {}ms ({})", elapsed.as_millis(), {
 		let elapsed_secs = elapsed.as_secs();
 		
 		if elapsed_secs > 0 {
@@ -115,5 +115,5 @@ fn handle_stream(mut stream: TcpStream) {
 			let elapsed_micros = elapsed.as_micros();
 			format!("{}μs", elapsed_micros)
 		}
-	}));
+	}), MsgType::Info);
 }
