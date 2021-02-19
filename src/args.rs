@@ -1,6 +1,5 @@
 use clap::{App, Arg, ArgMatches};
 
-use crate::printing::{print_msg, MsgType};
 use crate::config;
 
 pub fn parse_args() -> config::ParsedArgs {
@@ -84,15 +83,12 @@ This flag gets priority over the -v option.")
 					// Set verbosity
 					let value = verb_val.unwrap().parse::<u8>().unwrap();
 					args_config.verbosity = value;
-					
-					print_msg(format!("Verbosity level: {}", verb_val.unwrap()), MsgType::Info);
 				},
 				_ => {
-					print_msg(format!("Invalid verbosity level, using default value: {}.", config::DEFAULT_VERB), MsgType::Warning);
+					println!("Invalid verbosity level, using default value: {}.", config::DEFAULT_VERB);
 				},
 			}
 		} else {
-			print_msg(format!("Verbosity level not set, using default value: {}.", config::DEFAULT_VERB), MsgType::Warning);
 		}
 	}
 
