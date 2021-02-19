@@ -86,9 +86,8 @@ This flag gets priority over the -v option.")
 				},
 				_ => {
 					println!("Invalid verbosity level, using default value: {}.", config::DEFAULT_VERB);
-				},
+				}
 			}
-		} else {
 		}
 	}
 
