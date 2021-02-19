@@ -12,30 +12,36 @@ lazy_static!{
 	pub static ref INFO_MARKER: String = "[I]".clear().to_string();
 }
 
+pub enum MsgType {
+	Error,
+	Warning,
+	Info
+}
+
 pub fn print_markers() {
-	print_err("<- Error");
-	print_warn("<- Warning");
-	print_info("<- Info");
+	print_msg("<- Error", MsgType::Error);
+	print_msg("<- Warning", MsgType::Warning);
+	print_msg("<- Info", MsgType::Info);
 }
 
-// Used to print an error to screen.
-pub fn print_err<S: Into<String>>(text: S) {
-	if CONFIG.printing.verbosity >= 1 {
-		eprintln!("{}", format!("{} {}", *ERROR_MARKER, text.into()));
-	}
-}
-
-// Used to print a warning message to screen.
-pub fn print_warn<S: Into<String>>(text: S) {
-	if CONFIG.printing.verbosity >= 2 {
-		println!("{}", format!("{} {}", *WARNING_MARKER, text.into()));
-	}
-}
-
-// Used to print an information to screen.
-pub fn print_info<S: Into<String>>(text: S) {
-	if CONFIG.printing.verbosity >= 3 {
-		println!("{}", format!("{} {}", *INFO_MARKER, text.into()));
+// Print a message
+pub fn print_msg<S: Into<String>>(text: S, msg_type: MsgType) {
+	match msg_type {
+		MsgType::Error => {
+			if CONFIG.printing.verbosity >= 1 {
+				eprintln!("{}", format!("{} {}", *ERROR_MARKER, text.into()));
+			}
+		},
+		MsgType::Warning => {
+			if CONFIG.printing.verbosity >= 2 {
+				println!("{}", format!("{} {}", *WARNING_MARKER, text.into()));
+			}
+		},
+		MsgType::Info => {
+			if CONFIG.printing.verbosity >= 3 {
+				println!("{}", format!("{} {}", *INFO_MARKER, text.into()));
+			}
+		}
 	}
 }
 
