@@ -91,12 +91,7 @@ This section contains all the default values that will be used in case no data i
  - `www_path`: `"www/"`
 
 ## Contribution
-The main way to contribute is through issues.  
-If you think that something is missing or some things may be better written in another way, open an issue.  
-If you think that the documentation contains errors or is not clear, open an issue.  
-If you think that anything of any kind can be improved, open an issue.  
-
-I'm not a Git expert so no pull requests for now.
+You are free to contribute to the project. Any help, feature request, issue report or improvement of any kind is well accepted as long as it makes sense for the project and doesn't break neither the initial reason why the project was developed nor the project philosophy.
 
 ## License
 This repository uses a BSD-3-Clause license. More info [here](https://github.com/EdoardoLaGreca/webserver/blob/main/LICENSE).
